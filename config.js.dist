@@ -1,0 +1,21 @@
+module.exports = {
+
+	// path to your socket file
+	"socket": "tileblaster.sock",
+
+	// path to your data directory
+	"tiles": "data",
+	
+	// nsa heartbeat server, if so desired
+	"heartbeat": "udp4://status.dsst.io:30826",
+
+	// maps
+	"maps": {
+		"example-map": {
+			"url": "https://maps.example.com/example/{z}/{x}/{y}.{e}",
+			"ext": ["png","jpg"],
+			"zoom": [9,18],
+			"bbox": [13.04758,52.31643,13.76741,52.68540] // west, south, east, north
+		}
+	}
+};
