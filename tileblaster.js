@@ -2,16 +2,17 @@
 
 // node modules
 var fs = require("fs");
+var url = require("url");
 var path = require("path");
+var http = require("http");
 var zlib = require("zlib");
 var stream = require("stream");
 
 // npm modules
 var debug = require("debug")("tileblaster");
-var ellipse = require("ellipse");
+var request = require("request");
 var mkdirp = require("mkdirp");
 var queue = require("fastq");
-var request = require("request");
 
 // get config
 if (!fs.existsSync(path.resolve(__dirname, "config.js"))) console.error("no config file") || process.exit();
@@ -67,52 +68,77 @@ var q = queue(function(t,n){ t(n); }, 20);
 // statistics
 var statistics = { hit: 0, fetch: 0, err: 0 };
 
-// make app
-var app = ellipse();
-
-// configure map route
-app.get("/:map([A-Za-z0-9\\-\\_\\.]+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:ext([A-Za-z0-9]+)", function(req,res){
-
-	// count hit
-	statistics.hit++;
+// create http server
+var server = http.createServer(function (req, res) {
 	
+	// only GET is allowed
+	if (req.method !== "GET") {
+		debug("invalid method: %s", req.method);
+		res.statusCode = 405;
+		res.end();
+		return;
+	}
+
+	// only tile requests are allowed
+	if (!(/\/(([a-z0-9\-\_\.]+)\/([0-9]+)\/([0-9]+)\/([0-9]+)(@2x)?\.([a-z0-9]+))$/.exec(url.parse(req.url).pathname.toLowerCase()))) {
+		debug("invalid request: %s", url.parse(req.url).pathname);
+		res.statusCode = 404;
+		res.end();
+		return;
+	}
+
+	var p = RegExp.$1;
+	var map = RegExp.$2;
+	var z = parseInt(RegExp.$3,10);
+	var x = parseInt(RegExp.$4,10);
+	var y = parseInt(RegExp.$5,10);
+	var r = (RegExp.$6 === "@2x");
+	var ext = RegExp.$7;
+
 	// check if map exists
-	var map = req.params.map.toLowerCase();
-	var ext = req.params.ext.toLowerCase();
-	var x = parseInt(req.params.x,10);
-	var y = parseInt(req.params.y,10);
-	var z = parseInt(req.params.z,10);
-	
-	if (!config.maps.hasOwnProperty(map)) return debug("requested invalid map: %s", map) || res.status(404).end() || (statistics.err++);
+	if (!config.maps.hasOwnProperty(map)) {
+		debug("requested invalid map: %s", map)
+		res.statusCode = 404;
+		res.end();
+		statistics.err++
+		return;
+	}
 	
 	// check requested tile
 	check(map, z, x, y, ext, function(err){
-		if (err) return debug("invalid tile /%s/%d/%d/%d.%s (%s)", map, z, x, y, ext, err) || res.status(404).end() || (statistics.err++);
+		if (err) {
+			debug("invalid tile '%s': %s", p, err);
+			res.statusCode = 404;
+			res.end();
+			statistics.err++
+			return;
+		}
 		
-		// get tile FIXME
-			if (err) return debug("invalid tile /%s/%d/%d/%d.%s (%s)", map, z, x, y, ext, err) || res.status(404).end() || (statistics.err++);
+		// get tile
 		tile(map, z, x, y, r, ext, function(err, stream){
+			if (err) {
+				debug("error getting tile '%s': %s", p, err);
+				res.statusCode = 404;
+				res.end();
+				statistics.err++
+				return;
+			}
+
+			debug("delivering tile %s", p);
 
 			// set status and content type
 			res.writeHead(200, { "Content-Type": mime(ext) });
 
 			// pipe tile to response
 			stream.pipe(res);
+
+			// count hit
+			statistics.hit++;
+
 		});
 		
 	});
-	
-});
 
-
-// default get route
-app.get("*", function(req,res){
-	res.status(404).end();
-});
-
-// default route for other methods
-app.all("*", function(req,res){
-	res.status(405).end();
 });
 
 // listen on socket
@@ -126,7 +152,7 @@ app.all("*", function(req,res){
 			});
 		});
 	})(function(){
-		app.listen(config.socket, function(err) {
+		server.listen(config.socket, function(err) {
 			if (err) return fn(err);
 			// change socket mode
 			fs.chmod(config.socket, 0777, fn);
