@@ -9,6 +9,9 @@ module.exports = {
 	// nsa heartbeat server, if so desired
 	"heartbeat": "udp4://status.dsst.io:30826",
 
+	// create .gz of tile
+	"gzip": true,
+
 	// maps
 	"maps": {
 		"example-map": {

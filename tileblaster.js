@@ -3,6 +3,7 @@
 // node modules
 var fs = require("fs");
 var path = require("path");
+var zlib = require("zlib");
 var stream = require("stream");
 
 // npm modules
@@ -193,22 +194,36 @@ function tile(mapid, z, x, y, r, e, fn){
 					fn(null, mux);
 					mux.pipe(savestream)
 
-					// do some post-save-checks (FIXME)
+					// do some post-save-operations
 					savestream.on("finish", function(){
 						debug("saved tile %s", tile_url);
-						// experimental: check if cached file has the right size, otherwise delete.
-						if (resp.headers.hasOwnProperty("content-length")) {
-							fs.stat(file, function(err, stats){
-								if (err) return debug("could not get stats for file %s", file);
-								if (stats.size !== parseInt(resp.headers["content-length"],10)) {
-									debug("oh shit: got just half a file: %s", file);
-									fs.unlink(file, function(err){
-										if (err) return debug("could not unlink broken file: %s", file);
-										debug("unlinked broken file %s", file);
-									});
-								}
-							});
-						};
+
+						(function(next){
+							// experimental: check if cached file has the right size, otherwise delete.
+							if (resp.headers.hasOwnProperty("content-length")) {
+								debug("checking if file is corrupt")
+								fs.stat(file, function(err, stats){
+									if (err) return debug("could not get stats for file %s", file);
+									if (stats.size !== parseInt(resp.headers["content-length"],10)) {
+										debug("oh shit: got just half a file: %s", file);
+										fs.unlink(file, function(err){
+											if (err) return debug("could not unlink broken file: %s", file);
+											debug("unlinked broken file %s", file);
+										});
+									} else {
+										debug("file is clean");
+										next();
+									}
+								});
+							} else {
+								next();
+							}
+						})(function(){
+							// experimental: create static gzip
+							if (config.gzip !== true) return debug("no compression required");
+							debug("creating gz of tile");
+							fs.createReadStream(file).pipe(zlib.createGzip()).pipe(fs.createWriteStream(file+".gz"));
+						});
 					});
 					
 					// finally pipe data to multiplexer stream
