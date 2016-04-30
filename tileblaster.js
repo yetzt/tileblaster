@@ -84,8 +84,8 @@ app.get("/:map([A-Za-z0-9\\-\\_\\.]+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:ext([A-Za-z0-9
 		if (err) return debug("invalid tile /%s/%d/%d/%d.%s (%s)", map, z, x, y, ext, err) || res.status(404).end() || (statistics.err++);
 		
 		// get tile FIXME
-		tile(map, z, x, y, ext, function(err, stream){
 			if (err) return debug("invalid tile /%s/%d/%d/%d.%s (%s)", map, z, x, y, ext, err) || res.status(404).end() || (statistics.err++);
+		tile(map, z, x, y, r, ext, function(err, stream){
 
 			// set status and content type
 			res.status(200);
@@ -147,8 +147,8 @@ if (config.hasOwnProperty("heartbeat")) {
 };
 
 // get a tile
-function tile(mapid, z, x, y, e, fn){
-	var file = path.resolve(config.tiles, tilefile(mapid, z, x, y, e));
+function tile(mapid, z, x, y, r, e, fn){
+	var file = path.resolve(config.tiles, tilefile(mapid, z, x, y, r, e));
 	fs.exists(file, function(ex){
 		if (ex) return fn(null, fs.createReadStream(file));
 		
@@ -158,7 +158,7 @@ function tile(mapid, z, x, y, e, fn){
 		// check queue length, refuse if too full
 		if (q.length() > 200) return debug("fetch queue is too full: %d", q.length) || fn(new Error("queue too full"));
 		
-		var tile_url = tileurl(mapid, z, x, y, e);
+		var tile_url = tileurl(mapid, z, x, y, r, e);
 		
 		// ensure directory exists
 		mkdirp(path.dirname(file), function(err){
@@ -213,21 +213,23 @@ function tile(mapid, z, x, y, e, fn){
 };
 
 // transform parameters to url
-function tileurl(mapid, z, x, y, e){
+function tileurl(mapid, z, x, y, r, e){
 	return config.maps[mapid].url
 		.replace("{x}", x.toFixed(0))
 		.replace("{y}", y.toFixed(0))
 		.replace("{z}", z.toFixed(0))
+		.replace("{r}", (r) ? (config.maps[mapid].retina||"@2x") : "")
 		.replace("{e}", (e) ? e : "");
 };
 
 // transform parameters to filename
-function tilefile(mapid, z, x, y, e){
+function tilefile(mapid, z, x, y, r, e){
 	return ("{m}/{z}/{x}/{y}{r}.{e}")
 		.replace("{m}", mapid)
 		.replace("{x}", x.toFixed(0))
 		.replace("{y}", y.toFixed(0))
 		.replace("{z}", z.toFixed(0))
+		.replace("{r}", (r) ? (config.maps[mapid].retina||"@2x") : "")
 		.replace("{e}", (e) ? e : "");
 };
 
