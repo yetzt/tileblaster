@@ -30,6 +30,14 @@ Object.keys(config.maps).forEach(function(mapid){
 	// generate default zoom
 	if (!config.maps[mapid].hasOwnProperty("zoom")) config.maps[mapid].zoom = [0,20];
 	
+	if (config.maps[mapid].url.indexOf("{s}") >= 0) {
+		if (!config.maps[mapid].hasOwnProperty("sub")) console.error("no subdomains configured for map "+mapid) || process.exit(1);
+		if (typeof config.maps[mapid].sub === "string") config.maps[mapid].sub = config.maps[mapid].sub.split("");
+		if (!(config.maps[mapid].sub instanceof Array)) console.error("invalid 'sub' option for map "+mapid) || process.exit(1);
+	} else {
+		config.maps[mapid].sub = false;
+	}
+	
 	// precalculate bbox for zoom levels
 	config.maps[mapid].bounds = false;
 	if (config.maps[mapid].hasOwnProperty("bbox")) {
@@ -215,6 +223,7 @@ function tile(mapid, z, x, y, r, e, fn){
 // transform parameters to url
 function tileurl(mapid, z, x, y, r, e){
 	return config.maps[mapid].url
+		.replace("{s}", (config.maps[mapid].sub !== false) ? config.maps[mapid].sub[Math.floor(Math.random()*config.maps[mapid].sub.length)] : "")
 		.replace("{x}", x.toFixed(0))
 		.replace("{y}", y.toFixed(0))
 		.replace("{z}", z.toFixed(0))
