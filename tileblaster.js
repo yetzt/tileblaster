@@ -61,9 +61,6 @@ Object.keys(config.maps).forEach(function(mapid){
 	
 });
 
-// console.log(config.maps["berlin-2015"]);
-// process.exit();
-
 // generate global queue
 var q = queue(function(t,n){ t(n); }, 20);
 
