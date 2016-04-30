@@ -97,8 +97,7 @@ app.get("/:map([A-Za-z0-9\\-\\_\\.]+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:ext([A-Za-z0-9
 		tile(map, z, x, y, r, ext, function(err, stream){
 
 			// set status and content type
-			res.status(200);
-			res.setHeader("Content-Type", "image/"+ext);
+			res.writeHead(200, { "Content-Type": mime(ext) });
 
 			// pipe tile to response
 			stream.pipe(res);
@@ -153,6 +152,28 @@ if (config.hasOwnProperty("heartbeat")) {
 	setInterval(function(){
 		heartbeat.send(statistics);
 	},300000).unref();
+};
+
+// mime type by extension; FIXME: find better solution
+function mime(ext){
+	switch (ext) {
+		case "mvt":
+			return "application/vnd.mapbox-vector-tile";
+		break;
+		case "json": 
+		case "geojson": 
+			return "application/vnd.geo+json"; 
+		break;
+		case "jpg": 
+			return "image/jpeg"; 
+		break;
+		case "svg": 
+			return "image/svg+xml"; 
+		break;
+		default: 
+			return "image/"+ext; 
+		break;
+	}
 };
 
 // get a tile
