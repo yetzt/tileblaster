@@ -214,6 +214,9 @@ function tile(mapid, z, x, y, r, e, fn){
 					// finally pipe data to multiplexer stream
 					this.pipe(mux);
 
+				}).on("error", function(err){
+					done();
+					fn(err);
 				});
 			});
 		});
