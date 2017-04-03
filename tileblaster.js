@@ -210,7 +210,7 @@ function tile(mapid, z, x, y, r, e, fn){
 	var tile_file = tilefile(mapid, z, x, y, r, e);
 	
 	// check if tile is known 404 and was recorded less than 5 minutes ago
-	if (config.missing.indexOf(tile_file) && config.missing[tile_file].added > (Date.now()-300000)) {
+	if (config.missing.hasOwnProperty(tile_file) && config.missing[tile_file].added > (Date.now()-300000)) {
 		config.missing[tile_file].hits++;
 		fn(new Error("tile is known 404"));
 		return; 
