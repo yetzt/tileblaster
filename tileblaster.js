@@ -26,6 +26,9 @@ if (!config.hasOwnProperty("tiles") || typeof config.tiles !== "string" || confi
 config.socket = path.resolve(__dirname, config.socket);
 config.tiles = path.resolve(__dirname, config.tiles);
 
+// keep account of missing tiles
+config.missing = {};
+
 // preconfigure maps
 Object.keys(config.maps).forEach(function(mapid){
 	
@@ -183,6 +186,9 @@ function mime(ext){
 		case "mvt":
 			return "application/vnd.mapbox-vector-tile";
 		break;
+		case "pbf":
+			return "application/x-protobuf";
+		break;
 		case "json": 
 		case "geojson": 
 			return "application/vnd.geo+json"; 
@@ -201,7 +207,16 @@ function mime(ext){
 
 // get a tile
 function tile(mapid, z, x, y, r, e, fn){
-	var file = path.resolve(config.tiles, tilefile(mapid, z, x, y, r, e));
+	var tile_file = tilefile(mapid, z, x, y, r, e);
+	
+	// check if tile is known 404 and was recorded less than 5 minutes ago
+	if (config.missing.indexOf(tile_file) && config.missing[tile_file].added > (Date.now()-300000)) {
+		config.missing[tile_file].hits++;
+		fn(new Error("tile is known 404"));
+		return; 
+	}
+	
+	var file = path.resolve(config.tiles, tile_file);
 	fs.exists(file, function(ex){
 		if (ex) return fn(null, fs.createReadStream(file));
 		
@@ -224,9 +239,23 @@ function tile(mapid, z, x, y, r, e, fn){
 					done();
 
 					// check response
-					if (resp.statusCode !== 200) return debug("status code for tile '%s' is %d", tile_url, resp.statusCode) || fn(new Error("status code is not 200"));
-					if (resp.headers.hasOwnProperty("content-type") && !/^image\//.test(resp.headers["content-type"])) return debug("content type for tile '%s' is %s", tile_url, resp.headers["content-type"]) || fn(new Error("content-type is not image/*"));
-					if (resp.headers.hasOwnProperty("content-length") && parseInt(resp.headers["content-length"],10) === 0) return debug("content lenght for tile '%s' is 0", tile_url) || fn(new Error("content-length is 0"));
+					if (resp.statusCode !== 200) {
+
+						// if 404, record as known missing
+						if (resp.statusCode === 404) config.missing[tile_file] = { added: Date.now(), hits: 1 };
+
+						debug("status code for tile '%s' is %d", tile_url, resp.statusCode);
+						fn(new Error("status code is not 200"));
+						return;
+					}
+
+					if (resp.headers.hasOwnProperty("content-type") && !/^(image\/|application\/vnd\.(mapbox-vector-tile|geo\+json|x-protobuf)$)/.test(resp.headers["content-type"])) return debug("content type for tile '%s' is %s", tile_url, resp.headers["content-type"]) || fn(new Error("unsupported content-type"));
+					if (resp.headers.hasOwnProperty("content-length") && parseInt(resp.headers["content-length"],10) === 0) {
+						config.missing[tile_file] = { added: Date.now(), hits: 1 };
+						debug("content lenght for tile '%s' is 0", tile_url);
+						fn(new Error("content-length is 0"));
+						return
+					}
 
 					// create passthrough stream for painless multiplexing
 					var mux = new stream.PassThrough;
@@ -264,9 +293,10 @@ function tile(mapid, z, x, y, r, e, fn){
 							}
 						})(function(){
 							// experimental: create static gzip
-							if (config.gzip !== true) return debug("no compression required");
-							debug("creating gz of tile");
-							fs.createReadStream(file).pipe(zlib.createGzip()).pipe(fs.createWriteStream(file+".gz"));
+							if (config.gzip === true || ((config.gzip instanceof Array) && config.gzip.indexOf(e) >= 0)) {
+								debug("creating gz of tile");
+								fs.createReadStream(file).pipe(zlib.createGzip()).pipe(fs.createWriteStream(file+".gz"));
+							}
 						});
 					});
 					
@@ -381,3 +411,44 @@ process.on("SIGINT", function(){
 	debug("caught SIGINT, terminating");
 	terminate();
 });
+
+// clean up known missing tiles
+setInterval(function(){
+	var missing = [];
+	var result = {};
+	var tot = 0;
+	var reqc = 0;
+	var resc = 0;
+
+	// filter out any records older than 5m
+	Object.keys(config.missing).forEach(function(k){
+		reqc++;
+		if (config.missing[k].added > (Date.now()-300000)) {
+			missing.push({
+				key: k,
+				added: config.missing[k].added,
+				hits: config.missing[k].hits
+			});
+			tot += config.missing[k].hits;
+		}
+	});
+	
+	// check for quick way out
+	if (tot === 0) {
+		config.missing = {};
+		return;
+	}
+	
+	// calculate average number of hits
+	var avg = (tot / missing.length);
+
+	// add above average tiles to result, keep average value as hit counter for reasonable head start on new tiles
+	missing.sort(function(a,b){ return a.hits-b.hits }).filter(function(v){ return (v.hits > avg) }).forEach(function(v){
+		result[v.key] = { added: v.added, hits: Math.floor(avg) };
+		resc++;
+	});
+	
+	config.missing = result;
+	debug("reduced cache of missing tiles from %d to %d entries");
+	
+},60000).unref();
