@@ -7,7 +7,7 @@ module.exports = {
 	"tiles": "data",
 	
 	// nsa heartbeat server, if so desired
-	"heartbeat": "udp4://status.dsst.io:30826",
+	"heartbeat": "udp4://status.example.com:30826",
 
 	// create .gz of tile
 	"gzip": true,
