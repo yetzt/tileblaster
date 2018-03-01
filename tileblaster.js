@@ -249,7 +249,7 @@ function tile(mapid, z, x, y, r, e, fn){
 						return;
 					}
 
-					if (resp.headers.hasOwnProperty("content-type") && !/^(image\/|application\/vnd\.(mapbox-vector-tile|geo\+json|x-protobuf)|binary\/octet-stream$)/.test(resp.headers["content-type"])) return debug("content type for tile '%s' is %s", tile_url, resp.headers["content-type"]) || fn(new Error("unsupported content-type"));
+					if (resp.headers.hasOwnProperty("content-type") && !/^(image\/|application\/(vnd\.(mapbox-vector-tile|geo\+json)|x-protobuf)|binary\/octet-stream$)/.test(resp.headers["content-type"])) return debug("content type for tile '%s' is %s", tile_url, resp.headers["content-type"]) || fn(new Error("unsupported content-type"));
 					if (resp.headers.hasOwnProperty("content-length") && parseInt(resp.headers["content-length"],10) === 0) {
 						config.missing[tile_file] = { added: Date.now(), hits: 1 };
 						debug("content lenght for tile '%s' is 0", tile_url);

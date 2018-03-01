@@ -14,9 +14,10 @@ module.exports = {
 
 	// maps
 	"maps": {
-		"example-map": {
-			"url": "https://maps.example.com/example/{z}/{x}/{y}.{e}",
+		"example": {
+			"url": "https://{s}.maps.example.com/example/{z}/{x}/{y}.{e}",
 			"ext": ["png","jpg"],
+			"sub": ["a","b","c","d"],
 			"zoom": [9,18],
 			"bbox": [13.04758,52.31643,13.76741,52.68540] // west, south, east, north
 		}
