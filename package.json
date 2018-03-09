@@ -1,9 +1,8 @@
 {
-  "private": true,
   "name": "tileblaster",
-  "version": "0.0.4",
-  "description": "pretty fast tile caching proxy",
-  "main": "tileblaster.js",
+  "version": "0.1.0",
+  "description": "pretty fast optimizing tile caching proxy",
+  "main": "lib/tileblaster.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yetzt/tileblaster.git"
@@ -15,10 +14,16 @@
   },
   "homepage": "https://github.com/yetzt/tileblaster#readme",
   "dependencies": {
-    "debug": "^2.2.0",
-    "fastq": "^1.4.1",
+    "debug": "^3.1.0",
+    "dur": "0.0.2",
+    "glob": "^7.1.2",
     "mkdirp": "^0.5.1",
-    "nsa": "^0.1.1",
-    "request": "^2.72.0"
+    "nsa": "^0.1.4",
+    "quu": "^0.3.0",
+    "request": "^2.83.0"
+  },
+  "optionalDependencies": {
+    "mozjpeg": "^5.0.0",
+    "optipng": "^1.1.0"
   }
 }
