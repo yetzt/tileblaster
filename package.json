@@ -1,6 +1,6 @@
 {
   "name": "tileblaster",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "pretty fast optimizing tile caching proxy",
   "main": "lib/tileblaster.js",
   "repository": {
@@ -23,7 +23,7 @@
     "request": "^2.83.0"
   },
   "optionalDependencies": {
-    "mozjpeg": "^5.0.0",
+    "mozjpeg-stream": "^1.0.3",
     "optipng": "^1.1.0"
   }
 }
