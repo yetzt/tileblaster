@@ -15,7 +15,7 @@ see [config.js.dist](config.js.dist)
 ### nginx configuration
 
 ```
-upstream tileblaster {
+upstream upstream_tileblaster {
 	server unix:/path/to/tileblaster.sock;
 }
 
