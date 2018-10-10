@@ -8,6 +8,12 @@ tileblaster is a map tile caching (and optimizing) proxy, designed to run with n
 
 use `--no-optional` if you don't need tile optimization.
 
+## run
+
+`tileblaster /path/to/config.js`
+
+Use [forever](https://npmjs.com/package/forever), [pm2](https://npmjs.com/package/pm2) or similar to run tileblaster as service;
+
 ## configuration
 
 see [config.js.dist](config.js.dist)
