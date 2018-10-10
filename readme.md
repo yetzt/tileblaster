@@ -6,7 +6,7 @@ tileblaster is a map tile caching (and optimizing) proxy, designed to run with n
 
 `npm i tileblaster -g`
 
-use `--no-optional` if you don't need tile optimization and don't want to clutter your `node_modules` with tons of packages.
+use `--no-optional` if you don't need tile optimization.
 
 ## configuration
 

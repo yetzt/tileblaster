@@ -23,7 +23,7 @@
     "request": "^2.88.0"
   },
   "optionalDependencies": {
-    "mozjpeg-stream": "^1.0.3",
-    "optipng": "^1.1.0"
+    "jpck": "^1.0.1",
+    "pnck": "^1.0.1"
   }
 }
