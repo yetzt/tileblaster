@@ -1,8 +1,11 @@
 {
   "name": "tileblaster",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "pretty fast optimizing tile caching proxy",
   "main": "lib/tileblaster.js",
+  "bin": {
+    "tileblaster": "bin/tileblaster.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yetzt/tileblaster.git"
