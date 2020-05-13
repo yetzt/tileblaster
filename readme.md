@@ -29,20 +29,16 @@ server {
 	listen 80;
 	server_name tileblaster;
 
-	gzip off;
-	gzip_static on;
-	gunzip on;
-
 	location / {
 		root /path/to/tileblaster/tiles;
-		if (!-f $request_filename.gz) {
-			proxy_pass http://upstream_tileblaster;
-		}
+		try_files $uri $uri/ @tileblaster;
+	}
+
+	location @tileblaster {
+		proxy_pass http://upstream_tileblaster;
 	}
 }
 ```
-
-using `if` because `try_files` doesn't play nice with `gzip_static` when no uncompressed file is around.
 
 ## usage
 
