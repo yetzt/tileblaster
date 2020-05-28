@@ -6,6 +6,12 @@ module.exports = {
 	// path to tile directory
 	"tiles": "/path/to/tiles",
 
+	// parallel request queue size
+	"queue": 100,
+
+	// parallel request queue size
+	"id": "tileblaster",
+
 	// nsa heartbeat server, if so desired
 	"heartbeat": "udp4://nsa.example.com:30826",
 
