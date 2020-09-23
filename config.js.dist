@@ -12,6 +12,9 @@ module.exports = {
 	// parallel request queue size
 	"id": "tileblaster",
 
+	// provide errors as response headers
+	"hints": false,
+
 	// nsa heartbeat server, if so desired
 	"heartbeat": "udp4://nsa.example.com:30826",
 
