@@ -56,6 +56,12 @@ module.exports = {
 			// * .png with `optipng`
 			// * .jpg with `mozjpeg`
 			"optimize": true,
+			
+			// compress tiles (only makes sense for non-rastered tiles like json, pbf, mvt)
+			"compress": [ "gz", "br" ],
+			
+			// write tiles to disk
+			"cache": true,
 
 			// minimum time tiles are kept
 			"expires": "1d",
