@@ -22,6 +22,7 @@
     "glob": "^7.1",
     "minimist": "^1.2.5",
     "mkdirp": "^1",
+    "node-watch": "^0.7.1",
     "nsa": "^0.2",
     "quu": "^0.3",
     "request": "^2.88"
