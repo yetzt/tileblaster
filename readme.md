@@ -28,6 +28,13 @@ upstream upstream_tileblaster {
 server {
 	listen 80;
 	server_name tileblaster;
+	
+	gzip_static on;
+	# brotli_static on; # if ngx_brotli is available
+	
+	if (-f $document_root/$uri.err) {
+		return 204;
+	}
 
 	location / {
 		root /path/to/tileblaster/tiles;
@@ -48,3 +55,4 @@ get the tiles via `http://server/<mapid>/<z>/<x>/<y>[<d>].<ext>`
 * `<z>`, `<x>` and `<z>` are the tile coorinates
 * `<d>` is the optional pixel density marker, for example `@2x`
 * `<ext>` is the extension, for example `png`, `geojson` or `mvt`
+	
