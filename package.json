@@ -24,7 +24,7 @@
     "mkdirp": "^1",
     "node-watch": "^0.7.1",
     "nsa": "^0.2",
-    "quu": "^0.3",
+    "quu": "^0.4.0",
     "request": "^2.88"
   },
   "optionalDependencies": {
