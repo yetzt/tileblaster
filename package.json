@@ -1,6 +1,6 @@
 {
   "name": "tileblaster",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "pretty fast optimizing & compressing tile caching proxy",
   "main": "lib/tileblaster.js",
   "bin": {
