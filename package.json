@@ -30,6 +30,6 @@
   "optionalDependencies": {
     "jpck": "^1.0.2",
     "node-zopfli": "^2.1.4",
-    "pnck": "^1.0.1"
+    "optipng": "^4.2.0"
   }
 }
