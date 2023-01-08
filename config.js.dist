@@ -34,6 +34,9 @@ module.exports = {
 			// * {r} resolution marker
 			"url": "https://{s}.tiles.example.com/tiles/{z}/{x}/{y}{r}.{e}",
 		
+			// url points to cloudtiles container (→ https://github.com/OpenCloudTiles/opencloudtiles-specification)
+			"cloudtiles": false,
+		
 			// possible extensions
 			"ext": ["mvt","json","topojson","png","jpg"],
 

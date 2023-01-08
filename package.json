@@ -28,6 +28,7 @@
     "request": "^2.88"
   },
   "optionalDependencies": {
+    "cloudtiles": "^0.0.1",
     "jpck": "^1.0.2",
     "node-zopfli": "^2.1.4",
     "optipng": "^4.2.0"
