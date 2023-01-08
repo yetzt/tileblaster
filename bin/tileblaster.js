@@ -4,7 +4,7 @@ var watch = require('node-watch');
 var configfile = require("path").resolve.apply(global, (!!argv._[0]) ? [ process.cwd(), argv._[0] ] : [ "../config.js" ]);
 var tb = require("../lib/tileblaster.js")(
 	(function(config){
-		["socket","tiles","queue","id"].forEach(function(n){
+		["socket","tiles","queue","id","port"].forEach(function(n){
 			if (!!argv[n]) config[n] = argv[n];
 		});
 		// watch changes in config file
