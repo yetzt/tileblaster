@@ -36,6 +36,9 @@ module.exports = {
 		
 			// url points to cloudtiles container (→ https://github.com/OpenCloudTiles/opencloudtiles-specification)
 			"cloudtiles": false,
+			
+			// backend uses tms instead of zxy
+			"tms": false,
 		
 			// possible extensions
 			"ext": ["mvt","json","topojson","png","jpg"],
