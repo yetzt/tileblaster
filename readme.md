@@ -54,5 +54,5 @@ get the tiles via `http://server/<mapid>/<z>/<x>/<y>[<d>].<ext>`
 * `<mapid>` is the map id specified in your `config.js`
 * `<z>`, `<x>` and `<z>` are the tile coorinates
 * `<d>` is the optional pixel density marker, for example `@2x`
-* `<ext>` is the extension, for example `png`, `geojson` or `mvt`
+* `<ext>` is the extension, for example `png`, `geojson` or `pbf`
 	
