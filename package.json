@@ -1,6 +1,6 @@
 {
   "name": "tileblaster",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "pretty fast optimizing & compressing tile caching proxy",
   "main": "lib/tileblaster.js",
   "bin": {
@@ -21,14 +21,14 @@
     "dur": "^0.0.3",
     "glob": "^8.1.0",
     "minimist": "^1.2.7",
-    "mkdirp": "^2.0.0",
+    "mkdirp": "^2.1.3",
     "node-watch": "^0.7.3",
     "nsa": "^0.2",
     "quu": "^0.4.3",
     "request": "^2.88"
   },
   "optionalDependencies": {
-    "cloudtiles": "^0.0.6",
+    "cloudtiles": "^0.0.8",
     "jpck": "^1.0.2",
     "node-zopfli": "^2.1.4",
     "pnck": "^1.0.1"
