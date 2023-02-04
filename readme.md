@@ -6,7 +6,7 @@ tileblaster is a map tile caching (and optimizing) proxy, designed to run with n
 
 `npm i tileblaster -g`
 
-use `--no-optional` if you don't want tile optimization or [opencloudtiles](https://github.com/OpenCloudTiles/opencloudtiles-specification) support.
+use `--no-optional` if you don't want tile optimization or [versatiles](https://github.com/versatiles-org/versatiles-spec) support.
 
 ## run
 
