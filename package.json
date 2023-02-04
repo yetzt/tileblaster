@@ -19,7 +19,7 @@
   "dependencies": {
     "debug": "^4.3.4",
     "dur": "^0.0.3",
-    "glob": "^8.1.0",
+    "klaw": "^4.1.0",
     "minimist": "^1.2.7",
     "node-watch": "^0.7.3",
     "nsa": "^0.2",
