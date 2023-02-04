@@ -1,6 +1,6 @@
 {
   "name": "tileblaster",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "pretty fast optimizing & compressing tile caching proxy",
   "main": "lib/tileblaster.js",
   "bin": {
@@ -27,9 +27,9 @@
     "quu": "^0.4.3"
   },
   "optionalDependencies": {
-    "versatiles": "^0.2.0",
     "jpck": "^1.0.2",
     "node-zopfli": "^2.1.4",
-    "pnck": "^1.0.1"
+    "pnck": "^1.0.1",
+    "versatiles": "^0.2.0"
   }
 }
