@@ -23,8 +23,8 @@
     "minimist": "^1.2.7",
     "node-watch": "^0.7.3",
     "nsa": "^0.2",
-    "quu": "^0.4.3",
-    "request": "^2.88"
+    "phin": "^3.7.0",
+    "quu": "^0.4.3"
   },
   "optionalDependencies": {
     "cloudtiles": "^0.0.8",
