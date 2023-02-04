@@ -23,23 +23,23 @@ module.exports = {
 
 	// maps
 	"maps": {
-		
+
 		// map id, accessible via //server/mapid/z/x/y.ext
 		"example": {
-		
-			// backend url: 
+
+			// backend url:
 			// * {s} subdomains specified in sub
 			// * {z}, {x}, {y} tile coordinates
 			// * {e} extension
 			// * {r} resolution marker
 			"url": "https://{s}.tiles.example.com/tiles/{z}/{x}/{y}{r}.{e}",
-		
-			
+
 			// url points to versatiles container (→ https://github.com/versatiles-org/versatiles-spec)
 			"versatiles": false,
+
 			// backend uses tms instead of zxy
 			"tms": false,
-		
+
 			// possible extensions
 			"ext": ["mvt","json","topojson","png","jpg"],
 
@@ -57,23 +57,23 @@ module.exports = {
 
 			// valid resolution markers
 			"res": ["@2x","@4x"],
-			
+
 			// optimize tiles
 			// * .png with `optipng`
 			// * .jpg with `mozjpeg`
 			"optimize": true,
-			
+
 			// compress tiles (only makes sense for non-rastered tiles like json, pbf, mvt)
 			"compress": [ "gz", "br" ],
-			
+
 			// write tiles to disk
 			"cache": true,
 
 			// minimum time tiles are kept
 			"expires": "1d",
-			
+
 		},
-		
+
 		// more backends here
 
 	},
