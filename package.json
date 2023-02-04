@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/yetzt/tileblaster#readme",
   "dependencies": {
-    "debug": "^4.3.4",
     "dur": "^0.0.3",
     "klaw": "^4.1.0",
     "minimist": "^1.2.7",
@@ -26,6 +25,7 @@
     "quu": "^0.4.3"
   },
   "optionalDependencies": {
+    "debug": "^4.3.4",
     "jpck": "^1.0.2",
     "node-zopfli": "^2.1.4",
     "nsa": "^0.2",
