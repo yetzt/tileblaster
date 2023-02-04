@@ -12,7 +12,7 @@ use `--no-optional` if you don't want tile optimization or [versatiles](https://
 
 `tileblaster /path/to/config.js`
 
-Use [forever](https://npmjs.com/package/forever), [pm2](https://npmjs.com/package/pm2) or similar to run tileblaster as service;
+Use [pm2](https://npmjs.com/package/pm2), [nodemon](https://npmjs.com/package/nodemon), [forever](https://npmjs.com/package/forever) or similar to run tileblaster as service;
 
 ## configuration
 
