@@ -27,7 +27,7 @@
     "quu": "^0.4.3"
   },
   "optionalDependencies": {
-    "cloudtiles": "^0.0.8",
+    "versatiles": "^0.2.0",
     "jpck": "^1.0.2",
     "node-zopfli": "^2.1.4",
     "pnck": "^1.0.1"
