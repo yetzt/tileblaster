@@ -22,13 +22,13 @@
     "klaw": "^4.1.0",
     "minimist": "^1.2.7",
     "node-watch": "^0.7.3",
-    "nsa": "^0.2",
     "phin": "^3.7.0",
     "quu": "^0.4.3"
   },
   "optionalDependencies": {
     "jpck": "^1.0.2",
     "node-zopfli": "^2.1.4",
+    "nsa": "^0.2",
     "pnck": "^1.0.1",
     "versatiles": "^0.2.0"
   }
