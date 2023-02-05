@@ -24,7 +24,7 @@ const tileblaster = module.exports = function tileblaster(config){
 		res.end("tileblaster ready.");
 	});
 
-	// index route
+	// default route
 	self.router.default(function(req, res){
 		res.statusCode = 404;
 		res.setHeader("content-type", "text/plain");
