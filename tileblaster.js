@@ -1,6 +1,8 @@
 
 const http = require("http");
+const path = require("path");
 const fs = require("fs");
+const os = require("os");
 
 const router = require("./lib/router");
 const debug = require("./lib/debug")("tileblaster");
@@ -9,13 +11,12 @@ const tileblaster = module.exports = function tileblaster(config){
 	if (!(this instanceof tileblaster)) return new tileblaster(...arguments);
 	const self = this;
 
-	self.config = config;
-
-	// default host to localhost if port is set
-	if (self.config.port && !self.config.host) self.config.host = "localhost";
+	// configure
+	self.config = {};
+	self.configure(config);
 
 	// router
-	self.router = router({ mountpoint: "/" }); // FIXME mountpoint from config
+	self.router = router({ mountpoint: self.config.mount });
 
 	// index route
 	self.router.route("/", function(req, res){
@@ -37,36 +38,141 @@ const tileblaster = module.exports = function tileblaster(config){
 	return this;
 };
 
+// read config and fill in the blanks
+tileblaster.prototype.configure = function(config){
+	const self = this;
+
+	// check config file version
+	if (!config.hasOwnProperty("version") || config.version !== 1) {
+		console.error("Config has no version property. Possibly an old config file? Exiting.")
+		process.exit(1);
+	};
+
+	// check if any maps are configured
+	if (!config.hasOwnProperty("maps") || Object.keys(config.maps) === 0) {
+		console.error("Config has no maps configured. Exiting.")
+		process.exit(1);
+	};
+
+	// check if any listen instructions are given
+	if (!config.hasOwnProperty("listen") || config.listen.length === 0) {
+		console.error("Config has no listen instructions. Exiting.")
+		process.exit(1);
+	};
+
+	// set config
+	self.config = {
+		id: "tileblaster",
+		threads: 1,
+		queue: 12,
+		url: null,
+		mount: null,
+		paths: {},
+		plugins: {},
+		listen: [],
+		maps: {},
+		...config,
+	};
+
+	// clamp number of threads to number of cores and queue size
+	self.config.threads = Math.max(1, Math.min(self.config.threads, os.cpus().length));
+	self.config.queue = Math.max(1, Math.min(self.config.queue, 100));
+
+	// warn user if queue size is less than 12 over all threads
+	if ((self.config.queue * self.config.threads) < 12) console.warn("Warning: Queue size of %d is pretty small.", self.config.queue);
+
+	// url and mount
+	if (!self.config.url) self.config.url = "/";
+	if (!self.config.mount) self.config.mount = (self.config.url === "/") ? "/" : self.config.url.replace(/^https?:\/\/.*?\//,"/");
+
+	// remove trailing slashes from url and mount
+	while (self.config.url.length > 1 && self.config.url.charCodeAt(self.config.url.length-1) === 47) self.config.url = self.config.url.slice(0, -1);
+	while (self.config.mount.length > 1 && self.config.mount.charCodeAt(self.config.mount.length-1) === 47) self.config.mount = self.config.mount.slice(0, -1);
+
+	// paths
+	if (!self.config.paths.work) self.config.paths.work = path.resolve(os.homedir(), "tileblaster");
+	["data","logs","plugins","sockets"].forEach(function(p){
+		if (!self.config.paths[p]) self.config.paths[p] = path.resolve(self.config.paths.work, p);
+	});
+
+	// default host to localhost if port is set
+	if (self.config.port && !self.config.host) self.config.host = "localhost";
+
+	// listen
+	self.config.listen = self.config.listen.filter(function(listen){
+		return listen.hasOwnProperty("port") || listen.hasOwnProperty("socket");
+	}).map(function(listen){
+		// ensure hostname is set
+		if (listen.hasOwnProperty("port")) {
+			if (typeof listen.port !== "number") listen.port = parseInt(listen.port,10);
+			if (!listen.host) listen.host = "localhost";
+		}
+		else if (listen.hasOwnProperty("socket")) {
+			listen.socket = path.resolve(self.config.paths.sockets, listen.socket);
+		};
+		return listen;
+	}).filter(function(listen){
+		// check for port and host types and NaN
+		return listen.socket || (!isNaN(listen.port) && typeof listen.host === "string");
+	});
+
+	// check again if any listen instructions are given
+	if (self.config.listen.length === 0) {
+		console.error("Config has no valid listen instructions. Exiting.")
+		process.exit(1);
+	};
+
+	// plugins FIXME resolve
+
+	// maps
+	config.maps = Object.entries(config.maps).reduce(function(maps, [ id, map ]){
+		let mapid = id.trim().toLowerCase().replace(/[^a-z0-9\-\_\.]+$/g,'');
+		if (mapid !== id) console.warn("Warning: Map id has been sanitized: '%s' → '%s'", id, mapid);
+		maps[mapid] = map;
+		return maps;
+	},{});
+
+	// cleanup FIXME?
+
+	return this;
+};
+
 // listen handler
 tileblaster.prototype.listen = function(router){
 	const self = this;
 
-	// listen on port
-	if (self.config.port) {
-		http.createServer(function(){
-			router(...arguments);
-		}).listen(self.config.port, self.config.host, function(err){
-			if (err) return debug("listen: ERROR binding port '%s:%d':", self.config.host, self.config.port, err);
-			debug("listen: listening on '%s:%d'", self.config.host, self.config.port);
-		});
-	};
+	self.config.listen.forEach(function(listen){
 
-	// listen on socket
-	if (self.config.socket) {
-		fs.unlink(self.config.socket, function(err) { // try unlink leftover socket
-			if (err && err.code !== "ENOENT") return debug("listen: ERROR deleting socket '%s':", self.config.socket, err);
-			http.createServer(function(){
-				router(...arguments);
-			}).listen(self.config.socket, function(err) {
-				if (err) return debug("listen: ERROR binding to socket '%s':", self.config.socket, err);
-				debug("listen: listening on socket '%s'", self.config.socket);
-				if (self.config.perms) fs.chmod(self.config.socket, self.config.perms, function(err){
-					if (err) return debug("listen: ERROR changing permissions of socket '%s' to '%s':", self.config.perms.toString(8), self.config.socket, err);
-					// FIXME chgrp
+		const server = http.createServer({ keepAlive: true }, function(){
+			router.call(self.router, ...arguments);
+		});
+
+		if (listen.port) {
+
+			server.listen(listen.port, listen.port, function(err){
+				if (err) return debug("listen: ERROR binding port '%s:%d':", listen.host, listen.port, err);
+				debug("listen: listening on '%s:%d'", listen.host, listen.port);
+			});
+
+		} else if (listen.socket) {
+
+			fs.unlink(listen.socket, function(err) { // try unlink leftover socket
+				if (err && err.code !== "ENOENT") return debug("listen: ERROR deleting socket '%s':", listen.socket, err);
+				server.listen(listen.socket, function(err) {
+					if (err) return debug("listen: ERROR binding to socket '%s':", listen.socket, err);
+					debug("listen: listening on socket '%s'", listen.socket);
+					if (listen.mode) fs.chmod(listen.socket, listen.mode, function(err){
+						if (err) return debug("listen: ERROR changing permissions of socket '%s' to '%s':", listen.socket, listen.perms.toString(8), err);
+					});
+					if (listen.group) fs.chown(listen.socket, os.userInfo().uid, listen.group, function(err){
+						if (err) return debug("listen: ERROR changing gid of socket '%s' to '%s':", listen.socket, listen.gid, err);
+					});
 				});
 			});
-		});
-	}
+
+		}
+
+	});
 
 	return self;
 };
@@ -76,7 +182,9 @@ if (require.main === module) {
 	process.env.DEBUG = process.env.DEBUG || "tileblaster";
 	debug("starting tileblaster");
 	tileblaster({
-		port: 8080,
+		version: 1,
+		listen: [{ port: 8080 }],
+		maps: { example: [] },
 		...require("./config"),
 	});
 };
