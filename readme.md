@@ -3,12 +3,13 @@
 ![tileblaster](docs/tileblaster.png)
 
 tileblaster is a map tile proxy with local caching, on-the-fly tile editing, conversion, optimization and compression capabilities.
-it works with raster tiles in various file formats, svg and pbf vector tiles and geojson/topojson data tiles.
+it works with raster tiles in various file formats, svg and pbf vector tiles and geojson/topojson data tiles and with various types
+of sources.
 
-## install
+## Install
 
 `npm i -g tileblaster`
 
-## license
+## License
 
 [Unlicense](./LICENSE)
