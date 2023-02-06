@@ -224,15 +224,3 @@ tileblaster.prototype.listen = function(router){
 
 	return self;
 };
-
-// run if called directly
-if (require.main === module) {
-	process.env.DEBUG = process.env.DEBUG || "tileblaster";
-	debug("starting tileblaster");
-	tileblaster({
-		version: 1,
-		listen: [{ port: 8080 }],
-		maps: { example: [] },
-		...require("./config"),
-	});
-};
