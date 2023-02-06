@@ -42,6 +42,16 @@ const tileblaster = module.exports = function tileblaster(config){
 		res.end("tileblaster ready.");
 	});
 
+	// map use
+	self.router.use(function(req, res, next){
+		req.steps = (req.path) ? req.path.split("/").slice(1) : [];
+		if (self.config.maps.hasOwnProperty(req.steps[0])) {
+			req.route = "@map";
+			req.map = req.steps[0];
+		};
+		next();
+	});
+
 	// map route
 	self.router.route("@map", function(req, res){
 
