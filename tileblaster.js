@@ -38,6 +38,7 @@ const tileblaster = module.exports = function tileblaster(config){
 	});
 
 	// listen
+	self.servers = [];
 	self.listen(self.router.serve);
 
 	return this;
