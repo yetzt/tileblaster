@@ -24,6 +24,9 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.builtins = {};
 	self.loadBuiltins([ "cors", "parse", "check", "noop", "tileserver", "compress", "cache", "memcache", "send" ]);
 
+	// assemble task lists for maps
+	self.maps = {};
+	self.prepareMaps();
 
 	// cleanup? TODO
 
@@ -93,6 +96,64 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.listen(self.router.serve);
 
 	return this;
+};
+
+// prepare jobs for maps
+tileblaster.prototype.prepareMaps = function(){
+	const self = this;
+	self.maps = Object.entries(self.config.maps).reduce(function(maps, [ mapid, map ]){
+		maps[mapid] = self.prepareJobs(mapid, map);
+		return maps;
+	},{});
+
+	return this;
+};
+
+// prepare jobs FIXME merge with prepareMaps?
+tileblaster.prototype.prepareJobs = function(mapid, map){
+	const self = this;
+	return map.map(function(job){
+
+		// job is a straight function
+		if (typeof job === "function") return job;
+
+		// if not an object, passthrough
+		if (typeof job !== "object") {
+			debug.warn("Invalid Task in map '%s'", mapid);
+			return function({}, next){ next(); };
+		};
+
+		// job is builtin
+		if (job.hasOwnProperty("builtin")) {
+			if (self.builtins.hasOwnProperty(job.builtin)) {
+				return function(args, fn){
+					return self.builtins[job.builtin].call(self, { ...args, opts: job }, fn);
+				};
+			} else {
+				// unknown plugin, pass through
+				debug.warn("Unknown builtin '%s' in map '%s'", job.builtin, mapid);
+				return function({}, next){ next(); };
+			};
+		};
+
+		// job is plugin
+		if (job.hasOwnProperty("plugin")) {
+			if (self.plugins.hasOwnProperty(job.plugin)) {
+				return function(args, fn){
+					return self.plugins[job.plugin].call(self, { ...args, opts: job }, fn);
+				};
+			} else {
+				// unknown plugin, pass through
+				debug.warn("Unknown plugin '%s' in map '%s'", job.plugin, mapid);
+				return function({}, next){ next(); };
+			};
+		};
+
+		// unknown job type, passthrough with warning
+		debug.warn("Invalid Task type in map '%s'", reqmapid);
+		return function({}, next){ next(); };
+
+	});
 };
 
 // load builtins
