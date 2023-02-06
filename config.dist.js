@@ -53,7 +53,7 @@ const config = module.exports = {
 			builtin: "check",
 			zoom: [ 0, 22 ], // min, max
 			bbox: [ -180, -90, 180, 90 ], // west, south, east, north
-			extentions: [ "png", "jpeg" ], // allowed extensions
+			extensions: [ "png", "jpeg" ], // allowed extensions
 			density: [ "", "@2x", "@3x" ], // allowed density markeers
 			check: function(params, fn) { // override check function, params from parse
 				fn(new Error("Check failed")); // deliver error if check failed
