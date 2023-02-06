@@ -51,9 +51,7 @@ module.exports = function({ req, res, opts, data }, next){
 		}
 
 		// allowed extensions
-		cache[data.map].extensions = ((opts.extensions) ? ((Array.isArray(opts.extensions)) ? opts.extensions : ((typeof opts.extensions === "string") ? [ opts.extensions ] : [])) : []).map(function(extension){
-			return (extension.charCodeAt(0) === 46) ? extension : "."+extension; // ensure leading dot
-		});
+		cache[data.map].extensions = ((opts.extensions) ? ((Array.isArray(opts.extensions)) ? opts.extensions : ((typeof opts.extensions === "string") ? [ opts.extensions ] : [])) : []);
 
 		// density marker
 		if (opts.hasOwnProperty("density")) {
