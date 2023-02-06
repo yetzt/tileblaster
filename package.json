@@ -16,6 +16,7 @@
     "url": "https://github.com/yetzt/tileblaster/issues"
   },
   "homepage": "https://github.com/yetzt/tileblaster#readme",
-  "dependencies": {},
-  "optionalDependencies": {}
+  "dependencies": {
+    "colrz": "^0.0.4"
+  }
 }
