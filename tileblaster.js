@@ -5,7 +5,7 @@ const fs = require("fs");
 const os = require("os");
 
 const router = require("./lib/router");
-const debug = require("./lib/debug")("tileblaster");
+const debug = require("./lib/debug");
 
 const tileblaster = module.exports = function tileblaster(config){
 	if (!(this instanceof tileblaster)) return new tileblaster(...arguments);
