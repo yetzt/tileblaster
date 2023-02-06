@@ -61,7 +61,7 @@ const tileblaster = module.exports = function tileblaster(config){
 	// map route
 	self.router.route("@map", function(req, res){
 
-		// assemble args
+		// assemble args and initial data
 		const args = {
 			req, res, // TODO
 			data: {
@@ -305,7 +305,6 @@ tileblaster.prototype.configure = function(config){
 		debug.error("Config has no valid listen instructions. Exiting.")
 		process.exit(1);
 	};
-
 
 	// maps
 	self.config.maps = Object.entries(config.maps).reduce(function(maps, [ id, map ]){
