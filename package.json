@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/yetzt/tileblaster#readme",
   "dependencies": {
-    "colrz": "^0.0.4"
+    "colrz": "^0.0.4",
+    "phin": "^3.7.0"
   }
 }
