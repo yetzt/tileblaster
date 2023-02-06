@@ -63,6 +63,20 @@ const tileblaster = module.exports = function tileblaster(config){
 		// assemble args
 		const args = {
 			req, res, // TODO
+			data: {
+				map: req.map,
+				path: req.path,
+				tilepath: req.tilepath,
+				steps: req.steps,
+				dest: req.tilepath, // template!
+				params: {},
+				tile: {
+					buffer: Buffer.alloc(0),
+					type: null,
+					dest: null,
+				},
+				tiles: [], // holds alternative versions (conversion, compression, etc)
+			}
 		};
 
 		// create tasks from map
