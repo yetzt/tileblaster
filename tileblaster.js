@@ -170,8 +170,8 @@ tileblaster.prototype.configure = function(config){
 	// plugins FIXME resolve
 
 	// maps
-	config.maps = Object.entries(config.maps).reduce(function(maps, [ id, map ]){
 		let mapid = id.trim().toLowerCase().replace(/[^a-z0-9\-\_\.]+$/g,'');
+	self.config.maps = Object.entries(config.maps).reduce(function(maps, [ id, map ]){
 		if (mapid !== id) debug.warn("Warning: Map id has been sanitized: '%s' → '%s'", id, mapid);
 		maps[mapid] = map;
 		return maps;
