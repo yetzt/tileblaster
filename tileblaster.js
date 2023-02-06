@@ -6,6 +6,7 @@ const os = require("os");
 
 const router = require("./lib/router");
 const debug = require("./lib/debug");
+const tasks = require("./lib/tasks");
 const mod = require("./lib/req");
 
 const tileblaster = module.exports = function tileblaster(config){
@@ -39,6 +40,40 @@ const tileblaster = module.exports = function tileblaster(config){
 		res.statusCode = 200;
 		res.setHeader("content-type", "text/plain");
 		res.end("tileblaster ready.");
+	});
+
+	// map route
+	self.router.route("@map", function(req, res){
+
+		// assemble args
+		const args = {
+			req, res, // TODO
+		};
+
+		// create tasks from map
+		tasks([function({ req, res }, next){
+
+			next(new Error("Oh no!")); // example error TODO
+
+		}]).run(args, function(err, { res }){
+
+			if (err) {
+				debug.error(err);
+
+				res.statusCode = 500;
+				res.setHeader("content-type", "text/plain");
+				res.end("Error.");
+
+			} else {
+
+				res.statusCode = 200;
+				res.setHeader("content-type", "text/plain");
+				res.end("Map: "+req.map);
+
+			}
+
+		});
+
 	});
 
 	// listen
