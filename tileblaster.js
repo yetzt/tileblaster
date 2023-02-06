@@ -27,18 +27,18 @@ const tileblaster = module.exports = function tileblaster(config){
 	// router
 	self.router = router({ mountpoint: self.config.mount });
 
-	// index route
-	self.router.route("/", function(req, res){
-		res.statusCode = 200;
-		res.setHeader("content-type", "text/plain");
-		res.end("tileblaster ready.");
-	});
-
 	// default route
 	self.router.default(function(req, res){
 		res.statusCode = 404;
 		res.setHeader("content-type", "text/plain");
 		res.end("not found.");
+	});
+
+	// index route
+	self.router.route("/", function(req, res){
+		res.statusCode = 200;
+		res.setHeader("content-type", "text/plain");
+		res.end("tileblaster ready.");
 	});
 
 	// listen
