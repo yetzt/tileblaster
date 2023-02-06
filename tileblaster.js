@@ -20,7 +20,10 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.plugins = {};
 	self.loadPlugins(self.config.plugins);
 
-	// load builtins TODO
+	// load builtins
+	self.builtins = {};
+	self.loadBuiltins([ "cors", "parse", "check", "noop", "tileserver", "compress", "cache", "memcache", "send" ]);
+
 
 	// cleanup? TODO
 
@@ -89,6 +92,22 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.servers = [];
 	self.listen(self.router.serve);
 
+	return this;
+};
+
+// load builtins
+tileblaster.prototype.loadBuiltins = function(builtins){
+	const self = this;
+	self.builtins = builtins.reduce(function(builtins, builtin){
+		let builtinPath = path.resolve(__dirname,"builtins",builtin);
+		if (mod.exists(builtinPath)) {
+			debug.info("Loaded builtin '%s'", builtin);
+			builtins[builtin] = require(builtinPath);
+		} else {
+			debug.warn("Missing builtin: '%s'", builtin);
+		};
+		return builtins;
+	},{});
 	return this;
 };
 
