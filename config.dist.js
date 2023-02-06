@@ -1,4 +1,4 @@
-const config = module.export = {
+const config = module.exports = {
 	version: 1, // config file format version
 
 	id: "tileblaster", // id of the tileblaster instance, in case you want to run more than one; default: tileblaster
