@@ -82,10 +82,10 @@ module.exports = function({ req, res, opts, data }, next){
 	}
 
 	// check extension
-	if (cache[data.map].extensions.length > 0 && !cache[data.map].extensions.includes(data.params.e)) return next(new Error("illegal extension."));
+	if (cache[data.map].extensions.length > 0 && !cache[data.map].extensions.includes(data.params.e) && !cache[data.map].extensions.includes(data.params.f)) return next(new Error("illegal extension."));
 
 	// check density
-	if (cache[data.map].density && !cache[data.map].density.includes(data.params.r)) return next(new Error("illegal density marker."));
+	if (cache[data.map].density && !cache[data.map].density.includes(data.params.d) && !cache[data.map].density.includes(data.params.f)) return next(new Error("illegal density marker."));
 
 	// all passed
 	next();

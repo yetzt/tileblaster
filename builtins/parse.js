@@ -27,10 +27,15 @@ module.exports = function({ req, res, opts, data }, next){
 		z: parseInt(data.steps[1],10), // zoom
 		x: parseInt(data.steps[2],10), // lon
 		y: parseInt(data.steps[3],10), // lat
-		r: data.steps[3].includes("@") ? data.steps[3].slice(data.steps[3].indexOf("@"), data.steps[3].indexOf("x")+1) : null, // density marker ("@2x")
-		e: data.steps[3].includes(".") ? data.steps[3].slice(data.steps[3].indexOf(".")) : null, // extension, including dot
+		d: data.steps[3].includes("@") ? data.steps[3].slice(data.steps[3].indexOf("@"), data.steps[3].indexOf("x")+1) : null, // density marker ("@2x")
+		f: data.steps[3].includes(".") ? data.steps[3].slice(data.steps[3].indexOf(".")) : null, // extension, including dot
 		s: null, // subdomains
 	};
+
+	// compat
+	data.params.r = data.params.d; // legacy
+	data.params.df = data.params.d && parseFloat(data.params.d.slice(1,-1)); // density as float
+	data.params.e = data.params.f && data.params.f.slice(1); // extension without dot
 
 	// destination template for cache
 	data.dest = "/"+data.params.map+"/{z}/{x}/{y}{r}{e}{z}";
