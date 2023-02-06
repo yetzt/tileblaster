@@ -9,6 +9,7 @@ if (require.main === module) {
 	const fs = require("node:fs");
 	const path = require("node:path");
 	const cluster = require("node:cluster");
+	const retrieve = require("../lib/retrieve");
 
 	if (cluster.isPrimary) {
 		let worker;
@@ -60,5 +61,8 @@ if (require.main === module) {
 			maps: { example: [] },
 			...require("../config"),
 		});
+
+		retrieve("http://127.0.0.1:8080/example/0/0/0.png", function(){});
+
 	}
 };
