@@ -20,6 +20,10 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.plugins = {};
 	self.loadPlugins(self.config.plugins);
 
+	// load builtins TODO
+
+	// cleanup? TODO
+
 	// router
 	self.router = router({ mountpoint: self.config.mount });
 
@@ -167,7 +171,6 @@ tileblaster.prototype.configure = function(config){
 		process.exit(1);
 	};
 
-	// plugins FIXME resolve
 
 	// maps
 	self.config.maps = Object.entries(config.maps).reduce(function(maps, [ id, map ]){
@@ -176,8 +179,6 @@ tileblaster.prototype.configure = function(config){
 		maps[mapid] = map;
 		return maps;
 	},{});
-
-	// cleanup FIXME?
 
 	return this;
 };
