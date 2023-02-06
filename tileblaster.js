@@ -6,6 +6,7 @@ const os = require("os");
 
 const router = require("./lib/router");
 const debug = require("./lib/debug");
+const mod = require("./lib/req");
 
 const tileblaster = module.exports = function tileblaster(config){
 	if (!(this instanceof tileblaster)) return new tileblaster(...arguments);
@@ -14,6 +15,10 @@ const tileblaster = module.exports = function tileblaster(config){
 	// configure
 	self.config = {};
 	self.configure(config);
+
+	// plugins
+	self.plugins = {};
+	self.loadPlugins(self.config.plugins);
 
 	// router
 	self.router = router({ mountpoint: self.config.mount });
@@ -34,6 +39,45 @@ const tileblaster = module.exports = function tileblaster(config){
 
 	// listen
 	self.listen(self.router.serve);
+
+	return this;
+};
+
+// load plugins
+tileblaster.prototype.loadPlugins = function(){
+	const self = this;
+
+	self.plugins = Object.entries(self.config.plugins).reduce(function(plugins, [ name, plugin ]){
+
+		let pluginname = name.trim().toLowerCase().replace(/[^a-z0-9\-\_\.]+/g,'');
+		if (pluginname !== name) debug.warn("Warning: Plugin name has been sanitized: '%s' → '%s'", name, pluginname);
+
+		try {
+			if (mod.exists(plugin)) {
+				plugins[pluginname] = require(plugin);
+				debug.info("Loaded Plugin '%s'", pluginname);
+			} else {
+				let localPlugin = path.resolve(self.config.paths.plugins, plugin);
+				if (mod.exists(localPlugin)) {
+					plugins[pluginname] = require(localPlugin);
+					debug.info("Loaded Plugin '%s'", pluginname);
+				} else {
+					let packagePlugin = path.resolve(__dirname, "plugins", plugin);
+					if (mod.exists(packagePlugin)) {
+						plugins[pluginname] = require(packagePlugin);
+						debug.info("Loaded Plugin '%s'", pluginname);
+					} else {
+						debug.warn("Error loading plugin '%s': Not found", pluginname);
+					}
+				}
+			}
+		} catch(err) {
+			debug.warn("Error loading plugin '%s':", pluginname, err);
+		}
+
+		return plugins;
+
+	},{});
 
 	return this;
 };
