@@ -80,11 +80,7 @@ const tileblaster = module.exports = function tileblaster(config){
 		};
 
 		// create tasks from map
-		tasks([function({ req, res }, next){
-
-			next(new Error("Oh no!")); // example error TODO
-
-		}]).run(args, function(err, { res }){
+		tasks(self.maps[req.map]).run(args, function(err, { res }){
 
 			if (err) {
 				debug.error(err);
