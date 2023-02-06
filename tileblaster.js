@@ -88,19 +88,19 @@ tileblaster.prototype.configure = function(config){
 
 	// check config file version
 	if (!config.hasOwnProperty("version") || config.version !== 1) {
-		console.error("Config has no version property. Possibly an old config file? Exiting.")
+		debug.error("Config has no version property. Possibly an old config file? Exiting.")
 		process.exit(1);
 	};
 
 	// check if any maps are configured
 	if (!config.hasOwnProperty("maps") || Object.keys(config.maps) === 0) {
-		console.error("Config has no maps configured. Exiting.")
+		debug.error("Config has no maps configured. Exiting.")
 		process.exit(1);
 	};
 
 	// check if any listen instructions are given
 	if (!config.hasOwnProperty("listen") || config.listen.length === 0) {
-		console.error("Config has no listen instructions. Exiting.")
+		debug.error("Config has no listen instructions. Exiting.")
 		process.exit(1);
 	};
 
@@ -123,7 +123,7 @@ tileblaster.prototype.configure = function(config){
 	self.config.queue = Math.max(1, Math.min(self.config.queue, 100));
 
 	// warn user if queue size is less than 12 over all threads
-	if ((self.config.queue * self.config.threads) < 12) console.warn("Warning: Queue size of %d is pretty small.", self.config.queue);
+	if ((self.config.queue * self.config.threads) < 12) debug.warn("Warning: Queue size of %d is pretty small.", self.config.queue);
 
 	// url and mount
 	if (!self.config.url) self.config.url = "/";
@@ -162,7 +162,7 @@ tileblaster.prototype.configure = function(config){
 
 	// check again if any listen instructions are given
 	if (self.config.listen.length === 0) {
-		console.error("Config has no valid listen instructions. Exiting.")
+		debug.error("Config has no valid listen instructions. Exiting.")
 		process.exit(1);
 	};
 
@@ -171,7 +171,7 @@ tileblaster.prototype.configure = function(config){
 	// maps
 	config.maps = Object.entries(config.maps).reduce(function(maps, [ id, map ]){
 		let mapid = id.trim().toLowerCase().replace(/[^a-z0-9\-\_\.]+$/g,'');
-		if (mapid !== id) console.warn("Warning: Map id has been sanitized: '%s' → '%s'", id, mapid);
+		if (mapid !== id) debug.warn("Warning: Map id has been sanitized: '%s' → '%s'", id, mapid);
 		maps[mapid] = map;
 		return maps;
 	},{});
@@ -194,22 +194,24 @@ tileblaster.prototype.listen = function(router){
 		if (listen.port) {
 
 			server.listen(listen.port, listen.port, function(err){
-				if (err) return debug("listen: ERROR binding port '%s:%d':", listen.host, listen.port, err);
-				debug("listen: listening on '%s:%d'", listen.host, listen.port);
+				if (err) return debug.error("listen: ERROR binding port '%s:%d':", listen.host, listen.port, err);
+				debug.info("Listening on '%s:%d'", listen.host, listen.port);
+				self.servers.push(server);
 			});
 
 		} else if (listen.socket) {
 
 			fs.unlink(listen.socket, function(err) { // try unlink leftover socket
-				if (err && err.code !== "ENOENT") return debug("listen: ERROR deleting socket '%s':", listen.socket, err);
+				if (err && err.code !== "ENOENT") return debug.error("Deleting socket '%s':", listen.socket, err);
 				server.listen(listen.socket, function(err) {
-					if (err) return debug("listen: ERROR binding to socket '%s':", listen.socket, err);
-					debug("listen: listening on socket '%s'", listen.socket);
+					if (err) return debug.error("Binding to socket '%s':", listen.socket, err);
+					debug.info("Listening on socket '%s'", listen.socket);
+					self.servers.push(server);
 					if (listen.mode) fs.chmod(listen.socket, listen.mode, function(err){
-						if (err) return debug("listen: ERROR changing permissions of socket '%s' to '%s':", listen.socket, listen.perms.toString(8), err);
+						if (err) return debug.error("Changing permissions of socket '%s' to '%s':", listen.socket, listen.perms.toString(8), err);
 					});
 					if (listen.group) fs.chown(listen.socket, os.userInfo().uid, listen.group, function(err){
-						if (err) return debug("listen: ERROR changing gid of socket '%s' to '%s':", listen.socket, listen.gid, err);
+						if (err) return debug.error("Changing gid of socket '%s' to '%s':", listen.socket, listen.gid, err);
 					});
 				});
 			});
