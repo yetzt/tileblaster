@@ -53,6 +53,7 @@ const tileblaster = module.exports = function tileblaster(config){
 		if (self.config.maps.hasOwnProperty(req.steps[0])) {
 			req.route = "@map";
 			req.map = req.steps[0];
+			req.tilepath = "/"+req.steps.slice(1).join("/");
 		};
 		next();
 	});
