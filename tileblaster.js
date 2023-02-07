@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const os = require("os");
 
+const retrieve = require("./lib/retrieve");
 const router = require("./lib/router");
 const debug = require("./lib/debug");
 const tasks = require("./lib/tasks");
@@ -15,6 +16,9 @@ const tileblaster = module.exports = function tileblaster(config){
 	// configure
 	self.config = {};
 	self.configure(config);
+
+	// libraries (expose to plugins)
+	self.lib = { retrieve, debug, load, tasks };
 
 	// plugins
 	self.plugins = {};
