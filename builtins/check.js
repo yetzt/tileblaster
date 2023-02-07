@@ -12,7 +12,7 @@ module.exports = function({ req, res, opts, data }, next){
 		// assume reasonable default if no zoom level was specified
 		cache[data.map].zoom = (!opts.zoom || opts.zoom.length === 0) ? [ 0, 24 ] : opts.zoom;
 
-		// find min and max, clamp to reasonable levels FIXME global config?
+		// find min and max, clamp to reasonable levels
 		cache[data.map].minZoom = Math.max(0, Math.min(...cache[data.map].zoom));
 		cache[data.map].maxZoom = Math.min(24, Math.max(...cache[data.map].zoom));
 
@@ -23,8 +23,11 @@ module.exports = function({ req, res, opts, data }, next){
 
 		if (opts.bbox && Array.isArray(opts.bbox) && opts.bbox.length === 4) {
 
+			// FIXME: bboxes don't work across the antimeridian
+
 			// sort and clamp bbox to planet
-			cache[data.map].bbox = [ // FIXME: sorting prevents some errors, but also bboxes across the antimeridian. maybe some "strict" config?
+			// sorting prevents some user errors, but also bboxes across the antimeridian.
+			cache[data.map].bbox = [
 				Math.max(-180, Math.min(opts.bbox[0], opts.bbox[2])),
 				Math.max( -90, Math.min(opts.bbox[1], opts.bbox[3])),
 				Math.min( 180, Math.max(opts.bbox[0], opts.bbox[2])),
