@@ -6,7 +6,7 @@ const os = require("os");
 const router = require("./lib/router");
 const debug = require("./lib/debug");
 const tasks = require("./lib/tasks");
-const mod = require("./lib/req");
+const load = require("./lib/load");
 
 const tileblaster = module.exports = function tileblaster(config){
 	if (!(this instanceof tileblaster)) return new tileblaster(...arguments);
@@ -172,7 +172,7 @@ tileblaster.prototype.loadBuiltins = function(builtins){
 	const self = this;
 	self.builtins = builtins.reduce(function(builtins, builtin){
 		let builtinPath = path.resolve(__dirname,"builtins",builtin);
-		if (mod.exists(builtinPath)) {
+		if (load.exists(builtinPath)) {
 			debug.info("Loaded builtin '%s'", builtin);
 			builtins[builtin] = require(builtinPath);
 		} else {
@@ -193,17 +193,17 @@ tileblaster.prototype.loadPlugins = function(){
 		if (pluginname !== name) debug.warn("Warning: Plugin name has been sanitized: '%s' → '%s'", name, pluginname);
 
 		try {
-			if (mod.exists(plugin)) {
+			if (load.exists(plugin)) {
 				plugins[pluginname] = require(plugin);
 				debug.info("Loaded Plugin '%s'", pluginname);
 			} else {
 				let localPlugin = path.resolve(self.config.paths.plugins, plugin);
-				if (mod.exists(localPlugin)) {
+				if (load.exists(localPlugin)) {
 					plugins[pluginname] = require(localPlugin);
 					debug.info("Loaded Plugin '%s'", pluginname);
 				} else {
 					let packagePlugin = path.resolve(__dirname, "plugins", plugin);
-					if (mod.exists(packagePlugin)) {
+					if (load.exists(packagePlugin)) {
 						plugins[pluginname] = require(packagePlugin);
 						debug.info("Loaded Plugin '%s'", pluginname);
 					} else {
