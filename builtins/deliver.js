@@ -6,8 +6,6 @@ module.exports = function({ res, opts, data }, next){
 	// do nothing if response stream has been uses
 	if (!res.writable || res.destroyed || res.finished || res.closed || res.piped) return next();
 
-	// find best tile FIXME → extra builtin
-
 	// if tile buffer is empty, return 204
 	if (data.tile.buffer.length === 0) {
 		res.statusCode = 204;
