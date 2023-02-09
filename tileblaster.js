@@ -93,20 +93,25 @@ const tileblaster = module.exports = function tileblaster(config){
 		// create tasks from map
 		tasks(self.maps[req.map]).run(args, function(err, { res }){
 
-			if (err) {
-				debug.error(err);
+			// FIXME provide more context
+			if (err) debug.error(err);
 
+			// end if response is already sent
+			if (!res.writable || res.destroyed || res.finished || res.closed || res.piped) return; // FIXME handle errors anyway
+
+			// send default error FIXME configure verbose errors
+			if (err) {
 				res.statusCode = 500;
 				res.setHeader("content-type", "text/plain");
 				res.end("Error.");
+			};
 
-			} else {
+			// default response: no content
+			res.statusCode = 200; // FIXME 204
+			res.setHeader("content-length", "0");
+			res.end("");
 
-				res.statusCode = 200;
-				res.setHeader("content-type", "text/plain");
-				res.end("Map: "+req.map);
-
-			}
+			return;
 
 		});
 
