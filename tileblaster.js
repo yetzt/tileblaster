@@ -65,6 +65,12 @@ const tileblaster = module.exports = function tileblaster(config){
 	// map route
 	self.router.route("@map", function(req, res){
 
+		// mark response stream if something pipes into it
+		// to avoid sending to response stream twice
+		res.once("pipe", function(){
+			res.piped = true;
+		});
+
 		// assemble args and initial data
 		const args = {
 			req, res, // TODO
