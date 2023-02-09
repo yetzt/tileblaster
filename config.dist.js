@@ -88,7 +88,7 @@ const config = module.exports = {
 			builtin: "memcache",
 			server: "",
 		},{
-			builtin: "send", // deliver best matching tile for client
+			builtin: "deliver", // deliver best matching tile for client
 			headers: {}, // additional http headers
 		}],
 		// more maps
