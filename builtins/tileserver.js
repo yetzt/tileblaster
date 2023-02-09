@@ -4,6 +4,7 @@ const cache = {};
 // tileserver backend
 module.exports = function({ req, res, opts, data }, next){
 	const tileblaster = this;
+	const mime = this.lib.mime;
 
 	// cache opts
 	if (!cache.hasOwnProperty(data.map)) {
@@ -70,11 +71,9 @@ module.exports = function({ req, res, opts, data }, next){
 
 		// set tile
 		data.tile.buffer = resp.body;
-		data.tile.mimetype = mimetype;
 		data.tile.compression = false;
-
-		// figure out type
-
+		data.tile.mimetype = opts.mimetype || mimetype; // override via opts
+		data.tile.filetype = opts.filetype || mime.filetype(data.tile.mimetype, data.params.e);
 
 		// keep around
 		data.tile.sourceHeaders = resp.headers;
