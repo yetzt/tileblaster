@@ -81,7 +81,8 @@ const config = module.exports = {
 			methods: [ "mozjpeg", "optipng", "zopflipng", "svgo", "..." ],
 		},{
 			builtin: "compress",
-			methods: [ "br", "gz" ]
+			brotli: 8, // true or <level> or {opts}
+			gzip: true, // true or <level> or {opts}
 		},{
 			builtin: "cache",
 			duration: "30d",
