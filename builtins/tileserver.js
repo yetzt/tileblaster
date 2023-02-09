@@ -75,8 +75,8 @@ module.exports = function({ req, res, opts, data }, next){
 		data.tile.mimetype = opts.mimetype || mimetype; // override via opts
 		data.tile.filetype = opts.filetype || mime.filetype(data.tile.mimetype, data.params.e);
 
-		// keep around
-		data.tile.sourceHeaders = resp.headers;
+		// keep around? FIXME
+		// data.tile.sourceHeaders = resp.headers;
 
 		// deliver
 		next();
