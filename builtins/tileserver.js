@@ -1,4 +1,3 @@
-
 const cache = {};
 
 // tileserver backend
@@ -72,7 +71,7 @@ module.exports = function({ req, res, opts, data }, next){
 
 		// set tile
 		data.tile.buffer = resp.body;
-		data.tile.compression = false;
+		data.tile.compression = false; // http client always delivers uncompressed
 		data.tile.params = { ...data.params }; // tile-specific params, to be changed per-tile
 		data.tile.mimetype = opts.mimetype || mimetype; // override via opts
 		data.tile.filetype = opts.filetype || mime.filetype(data.tile.mimetype, data.params.e);
