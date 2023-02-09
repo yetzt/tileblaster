@@ -69,6 +69,7 @@ const config = module.exports = {
 			headers: {}, // additional headers sent to the backend tileserver
 			status: [ 200 ], // expected status code(s)
 			mimetypes: [ "image/png", "image/jpeg" ], // expected mime types
+			mimetype: "image/png", // overwrite mime type from server
 		},{
 			plugin: "resize",
 			size: [ 256, 256 ], // width, height
