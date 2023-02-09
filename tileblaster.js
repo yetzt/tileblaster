@@ -81,8 +81,10 @@ const tileblaster = module.exports = function tileblaster(config){
 				steps: req.steps,
 				dest: req.tilepath, // template!
 				params: {},
+				headers: {}, // response headers
 				tile: {
 					buffer: Buffer.alloc(0),
+					headers: {}, // response header specific to tile
 					type: null,
 					dest: null,
 				},
