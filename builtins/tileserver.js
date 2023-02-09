@@ -3,8 +3,9 @@ const cache = {};
 
 // tileserver backend
 module.exports = function({ req, res, opts, data }, next){
-	const tileblaster = this;
 	const mime = this.lib.mime;
+	const debug = this.lib.debug;
+	const retrieve = this.lib.retrieve;
 
 	// cache opts
 	if (!cache.hasOwnProperty(data.map)) {
@@ -47,10 +48,10 @@ module.exports = function({ req, res, opts, data }, next){
 		return (params.hasOwnProperty(key) && params[key] !== null) ? params[key] : "";
 	});
 
-	tileblaster.lib.debug.info("Fetching %s", data.tile.url);
+	debug.info("Fetching %s", data.tile.url);
 
 	// request
-	tileblaster.lib.retrieve({
+	retrieve({
 		url: data.tile.url,
 		headers: {
 			...cache[data.map].headers,
