@@ -6,13 +6,15 @@ const config = module.exports = {
 	treads: 1, // number of worker threads in cluster, default: 1
 	queue: 10, // number of parallel tile processes per worker, default: 12
 
-	url:   "https://tileserver/tiles", // public url including subdirectory
-	mount: "/tiles", // mountpoint override, default: pathname from ${config.paths.base}
+	server: {
+		url:   "https://tileserver/tiles", // public url including subdirectory
+		mount: "/tiles", // mountpoint override, default: pathname from ${config.paths.base}
+	},
 
 	paths: {
-		work:    "/path/to/stuff", // the base directory where files (sockets, logs, plugins, ...) go; default: ~/tileblaster
-		data:    "/path/to/tiles", // the directory in which cached tiles are saved; default: ${config.paths.work}/data
-		logs:    "/path/to/logs", // the directory in which cached tiles are saved; default: ${config.paths.work}/logs
+		work:    "/path/to/stuff",   // the base directory where files (sockets, logs, plugins, ...) go; default: ~/tileblaster
+		data:    "/path/to/tiles",   // the directory in which cached tiles are saved; default: ${config.paths.work}/data
+		logs:    "/path/to/logs",    // the directory in which cached tiles are saved; default: ${config.paths.work}/logs
 		plugins: "/path/to/plugins", // the directory from which plugins ar loaded; default: ${config.paths.work}/plugins
 		sockets: "/path/to/sockets", // the directory i nwhich sockets are created; default: ${config.paths.work}/sockets
 	},

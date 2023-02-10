@@ -36,7 +36,7 @@ const tileblaster = module.exports = function tileblaster(config){
 	// cleanup? TODO
 
 	// router
-	self.router = router({ mountpoint: self.config.mount });
+	self.router = router({ mountpoint: self.config.server.mount });
 
 	// default route
 	self.router.default(function(req, res){
@@ -284,12 +284,12 @@ tileblaster.prototype.configure = function(config){
 	if ((self.config.queue * self.config.threads) < 12) debug.warn("Warning: Queue size of %d is pretty small.", self.config.queue);
 
 	// url and mount
-	if (!self.config.url) self.config.url = "/";
-	if (!self.config.mount) self.config.mount = (self.config.url === "/") ? "/" : self.config.url.replace(/^https?:\/\/.*?\//,"/");
+	if (!self.config.server.url) self.config.server.url = "/";
+	if (!self.config.server.mount) self.config.server.mount = (self.config.server.url === "/") ? "/" : self.config.server.url.replace(/^https?:\/\/.*?\//,"/");
 
 	// remove trailing slashes from url and mount
-	while (self.config.url.length > 1 && self.config.url.charCodeAt(self.config.url.length-1) === 47) self.config.url = self.config.url.slice(0, -1);
-	while (self.config.mount.length > 1 && self.config.mount.charCodeAt(self.config.mount.length-1) === 47) self.config.mount = self.config.mount.slice(0, -1);
+	while (self.config.server.url.length > 1 && self.config.server.url.charCodeAt(self.config.server.url.length-1) === 47) self.config.server.url = self.config.server.url.slice(0, -1);
+	while (self.config.server.mount.length > 1 && self.config.server.mount.charCodeAt(self.config.server.mount.length-1) === 47) self.config.server.mount = self.config.server.mount.slice(0, -1);
 
 	// paths
 	if (!self.config.paths.work) self.config.paths.work = path.resolve(os.homedir(), "tileblaster");
