@@ -54,7 +54,7 @@
 
 ## Notes
 
-* [x] treat density as int? → proviide int in `params`
+* [x] treat density as int? → provide int in `params`
 * [ ] differentiate between user errors and backend errors → error wrapper
 * [x] audit plugins an builtins when reading config
 * [x] sort out fix base / root / tiles; default to localhost and / config
