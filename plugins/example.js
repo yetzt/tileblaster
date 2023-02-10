@@ -1,5 +1,5 @@
 // bare bones example plugin
 module.exports = function({ req, res }, next){
-	console.log("I'm a plugin!");
+	this.lib.debug.info("I'm a plugin!");
 	next();
 };
