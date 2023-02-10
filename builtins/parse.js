@@ -29,6 +29,7 @@ module.exports = function({ req, res, opts, data }, next){
 		y: parseInt(data.steps[3],10), // lat
 		r: data.steps[3].includes("@") ? data.steps[3].slice(data.steps[3].indexOf("@"), data.steps[3].indexOf("x")+1) : null, // density marker ("@2x")
 		f: data.steps[3].includes(".") ? data.steps[3].slice(data.steps[3].indexOf(".")) : null, // extension, including dot
+		c: null,
 	};
 
 	// compat
@@ -36,7 +37,7 @@ module.exports = function({ req, res, opts, data }, next){
 	data.params.e = data.params.f && data.params.f.slice(1); // extension without dot
 
 	// destination template for cache
-	data.dest = "/"+data.params.map+"/{z}/{x}/{y}{r}{e}{z}";
+	data.dest = "/{m}/{z}/{x}/{y}{r}{f}{c}";
 
 	next();
 };

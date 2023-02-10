@@ -50,7 +50,7 @@ module.exports = function({ req, res, opts, data }, next){
 					buffer: compressed,
 					compression: "br",
 					headers: { ...(tile.headers||{}), "content-encoding": "br" },
-					params: { ...(tile.params||{}), z: ".br" },
+					params: { ...(tile.params||{}), c: ".br" },
 				});
 				resolve();
 			}).catch(function(err){
@@ -70,7 +70,7 @@ module.exports = function({ req, res, opts, data }, next){
 					buffer: compressed,
 					compression: "gzip",
 					headers: { ...(tile.headers||{}), "content-encoding": "gzip" },
-					params: { ...(tile.params||{}), z: ".gz" },
+					params: { ...(tile.params||{}), c: ".gz" },
 				});
 				resolve();
 			}).catch(function(err){
