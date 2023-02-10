@@ -5,6 +5,7 @@ const os = require("os");
 
 const retrieve = require("./lib/retrieve");
 const router = require("./lib/router");
+const strtpl = require("./lib/strtpl");
 const debug = require("./lib/debug");
 const tasks = require("./lib/tasks");
 const load = require("./lib/load");
@@ -19,7 +20,7 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.configure(config);
 
 	// libraries (expose to plugins)
-	self.lib = { retrieve, debug, load, tasks, mime };
+	self.lib = { retrieve, debug, load, tasks, mime, strtpl };
 
 	// plugins
 	self.plugins = {};

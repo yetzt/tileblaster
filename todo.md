@@ -50,7 +50,7 @@
 	* [ ] Standalone Daemon with pid files?
 * [ ] Support for Glyphs and Styles, tile.json proxy
 * [ ] Request Queue to throttle unfulfilled requests
-* [ ] Custom String Template function for {x} replacement instead of regex
+* [x] Custom String Template function for {x} replacement instead of regex
 * [ ] Error wrapper (to pass along http status etc)
 
 ## Notes

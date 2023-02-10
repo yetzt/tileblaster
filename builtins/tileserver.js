@@ -4,6 +4,7 @@ const cache = {};
 module.exports = function({ req, res, opts, data }, next){
 	const mime = this.lib.mime;
 	const debug = this.lib.debug;
+	const strtpl = this.lib.strtpl;
 	const retrieve = this.lib.retrieve;
 
 	// cache opts
@@ -42,10 +43,7 @@ module.exports = function({ req, res, opts, data }, next){
 	if (cache[data.map].subdomains) params.s = cache[data.map].subdomains[ Date.now() % cache[data.map].subdomains.length ];
 
 	// construct url
-
-	data.tile.url = opts.url.replace(/\{([szxyrdef])\}/g, function(m,key){
-		return (params.hasOwnProperty(key) && params[key] !== null) ? params[key] : "";
-	});
+	data.tile.url = strtpl(opts.url, params);
 
 	debug.info("Fetching %s", data.tile.url);
 
