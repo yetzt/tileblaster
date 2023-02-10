@@ -30,6 +30,7 @@
 	* [ ] PMTiles
 	* [ ] MBTiles?
 	* [ ] WMS?
+	* [ ] From tile.json → Expand jobs with .push()
 * [ ] Cache Cleaning Worker
 * [ ] Monitoring
 * [ ] Map Web Interface
