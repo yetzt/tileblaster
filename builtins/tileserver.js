@@ -20,7 +20,7 @@ module.exports = function({ req, res, opts, data }, next){
 		cache[data.map].headers = opts.headers || {};
 
 		// mime types, make array
-		cache[data.map].mimetypes = (opts.hasOwnProperty("mimetypes")) ? Array.isArray(opts.mimetypes) ? opts.mimetypes : [ opts.mimetypes ] : false;
+		cache[data.map].mimetypes = (opts.hasOwnProperty("mimetypes")) ? Array.isArray(opts.mimetypes) ? opts.mimetypes : [ opts.mimetypes ] : false; // FIXME tolowercase
 
 		// tms
 		cache[data.map].tms = opts.tms === true;
@@ -61,18 +61,33 @@ module.exports = function({ req, res, opts, data }, next){
 		// check status code
 		if (cache[data.map].status && !cache[data.map].status.includes(resp.statusCode)) return next(new Error("Source Tileserver responded with statusCode "+resp.statusCode)); // FIXME set response status?
 
-		const mimetype = (resp.headers["content-type"]||"application/octet-stream").split(";").shift().trim().toLowerCase();
+		const mimetypeComplete = (resp.headers["content-type"]||"application/octet-stream").trim().toLowerCase(); // FIXME keep the charset? parse?
+		const mimetype = mimetypeComplete.split(";").shift().trim(); // FIXME keep the charset? parse?
 
-		if (cache[data.map].mimetypes && !cache[data.map].mimetypes.includes(mimetype)) return next(new Error("Source Tileserver responded with mime-type "+mimetype));
+		if (cache[data.map].mimetypes && !cache[data.map].mimetypes.includes(mimetype) && !cache[data.map].mimetypes.includes(mimetypeComplete)) return next(new Error("Source Tileserver responded with mime-type "+mimetype));
 
-		// FIXME check empty tile?
+		// FIXME this is a mess full of redundant information and undocumented, refactor
 
 		// set tile
 		data.tile.buffer = resp.body;
 		data.tile.compression = false; // http client always delivers uncompressed
-		data.tile.params = { ...data.params }; // tile-specific params, to be changed per-tile
-		data.tile.mimetype = opts.mimetype || mimetype; // override via opts
-		data.tile.filetype = opts.filetype || mime.filetype(data.tile.mimetype, data.params.e);
+		data.tile.mimetype = opts.mimetype || mimetypeComplete; // override via opts
+		data.tile.filetype = opts.filetype || mime.filetype(opts.mimetype || mimetype, data.params.e);
+
+		// params
+		data.tile.params = { // tile-specific params, to be changed per-tile
+			...data.params,
+			c: null, // no compression
+			e: data.params.e || data.tile.filetype,
+			f: data.params.f || "."+data.tile.filetype,
+		};
+
+		// http response
+		data.tile.status = (data.tile.buffer.length > 0) ? 200 : 204;
+		data.tile.headers = { // tile-specific response headers
+			"content-type": data.tile.mimetype,
+			"content-length": data.tile.buffer.length,
+		};
 
 		// keep around? FIXME
 		// data.tile.sourceHeaders = resp.headers;
