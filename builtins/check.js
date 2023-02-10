@@ -35,12 +35,28 @@ module.exports = function({ req, res, opts, data }, next){
 			// precalculate tile index bounds per zoom level, clamp to planet
 			// hint: tile indexes increment north → south
 			// hint: https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+
+			// clamp tile index to max extent of zoom level
+			function clamp(v,z) {
+				return Math.max(0,Math.min(Math.pow(2,z)-1,z));
+			};
+
+			// tile x of zoom level from longitude
+			function lon(x,z) {
+				return clamp(Math.floor((x+180)/360*Math.pow(2,z)),z);
+			};
+
+			// tile y of zoom level from latitude
+			function lat(y,z){
+				return clamp(Math.floor((1-Math.log(Math.tan(y*Math.PI/180)+1/Math.cos(y*Math.PI/180))/Math.PI)/2*Math.pow(2,z)),z);
+			};
+
 			cache[data.map].bounds = cache[data.map].zoomLevels.reduce(function(b,z){
 				return b[z] = [
-					Math.max(0,(Math.floor((cache[data.map].bbox[0]+180)/360*Math.pow(2,z)))), // west
-					Math.max(0,(Math.floor((1-Math.log(Math.tan(cache[data.map].bbox[3]*Math.PI/180)+1/Math.cos(cache[data.map].bbox[3]*Math.PI/180))/Math.PI)/2*Math.pow(2,z)))), // north
-					Math.min(Math.pow(2,z)-1,(Math.floor((cache[data.map].bbox[2]+180)/360*Math.pow(2,z)))), // east
-					Math.min(Math.pow(2,z)-1,(Math.floor((1-Math.log(Math.tan(cache[data.map].bbox[1]*Math.PI/180)+1/Math.cos(cache[data.map].bbox[1]*Math.PI/180))/Math.PI)/2*Math.pow(2,z)))), // south
+					lon(cache[data.map].bbox[0],z), // west
+					lat(cache[data.map].bbox[3],z), // north
+					lon(cache[data.map].bbox[2],z), // east
+					lat(cache[data.map].bbox[1],z), // south
 				],b;
 			},[]);
 
