@@ -35,7 +35,7 @@ module.exports = function({ req, res, opts, data }, next){
 
 	// compress all uncompressed tiles
 	Promise.allSettled(data.tiles.filter(function(tile){
-		return !tile.compression
+		return (!tile.compression && tile.buffer.length > 0) // filter already compressed or  empty tiles
 	}).reduce(function(promises, tile){
 
 		// FIXME: roll this up:
