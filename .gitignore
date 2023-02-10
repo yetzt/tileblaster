@@ -3,3 +3,4 @@ node_modules
 *.socket
 attic
 .nova
+package-lock.json
