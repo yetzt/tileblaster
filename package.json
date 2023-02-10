@@ -20,5 +20,9 @@
   "dependencies": {
     "colrz": "^0.0.4",
     "phin": "^3.7.0"
-  }
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "os": [ "darwin", "linux" ]
 }
