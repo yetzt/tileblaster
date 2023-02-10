@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "tileblaster",
   "version": "1.0.0-next",
   "description": "a quick and versatile map tile caching proxy",
