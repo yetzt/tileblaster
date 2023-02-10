@@ -108,13 +108,13 @@ const tileblaster = module.exports = function tileblaster(config){
 				res.statusCode = 500;
 				res.setHeader("content-type", "text/plain");
 				res.end("Error.");
+				return;
 			};
 
 			// default response: no content
 			res.statusCode = 200; // FIXME 204
 			res.setHeader("content-length", "0");
 			res.end("");
-
 			return;
 
 		});
