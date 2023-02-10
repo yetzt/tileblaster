@@ -23,14 +23,12 @@ module.exports = function({ req, res, opts, data }, next){
 
 		if (opts.bbox && Array.isArray(opts.bbox) && opts.bbox.length === 4) {
 
-			// FIXME: bboxes don't work across the antimeridian
-
-			// sort and clamp bbox to planet
-			// sorting prevents some user errors, but also bboxes across the antimeridian.
+			// clamp bbox to planet and sort latitude
+			// longitude might be inverted when bounds span the antimeridian
 			cache[data.map].bbox = [
-				Math.max(-180, Math.min(opts.bbox[0], opts.bbox[2])),
+				Math.max(-180, opts.bbox[0]),
 				Math.max( -90, Math.min(opts.bbox[1], opts.bbox[3])),
-				Math.min( 180, Math.max(opts.bbox[0], opts.bbox[2])),
+				Math.min( 180, opts.bbox[2]),
 				Math.min(  90, Math.max(opts.bbox[1], opts.bbox[3])),
 			];
 
@@ -79,7 +77,13 @@ module.exports = function({ req, res, opts, data }, next){
 
 	// check bounds
 	if (opts.bounds) {
-		if (data.params.x < opts.bounds[data.params.z][0] || data.params.x > opts.bounds[data.params.z][2]) return next(new Error("x is out of bounds."));
+		if (opts.bounds[data.params.z][0] < opts.bounds[data.params.z][2]) { // check for bounds spanning antimeridian
+			// bounds don't span antimeridian
+			if (data.params.x < opts.bounds[data.params.z][0] || data.params.x > opts.bounds[data.params.z][2]) return next(new Error("x is out of bounds."));
+		} else {
+			// bounds span antimeridian
+			if (data.params.x > opts.bounds[data.params.z][0] || data.params.x < opts.bounds[data.params.z][2]) return next(new Error("x is out of bounds, bounds span antimeridian"));
+		}
 		if (data.params.y < opts.bounds[data.params.z][1] || data.params.y > opts.bounds[data.params.z][3]) return next(new Error("y is out of bounds."));
 	}
 

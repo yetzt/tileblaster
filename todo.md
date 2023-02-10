@@ -64,6 +64,7 @@
 * [ ] memcached nginx sample config
 * [ ] figure out graceful reload / restart, signal handling
 * [-] make logging and output consistant
+* [x] allow bounds to span antimeridian
 
 ## Format Support
 
