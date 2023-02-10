@@ -7,6 +7,9 @@
   "bin": {
     "tileblaster": "bin/tileblaster.js"
   },
+  "scripts": {
+    "dev": "DEBUG=tileblaster node bin/tileblaster-dev.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yetzt/tileblaster.git"

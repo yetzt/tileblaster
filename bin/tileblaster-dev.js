@@ -4,7 +4,6 @@ const debug = require("../lib/debug");
 
 // run if called directly
 if (require.main === module) {
-	process.env.DEBUG = process.env.DEBUG || "tileblaster";
 
 	const fs = require("node:fs");
 	const path = require("node:path");
