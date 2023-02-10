@@ -1,14 +1,15 @@
 // minimalistic dev server, restarting on main file change
 
-const debug = require("../lib/debug");
-
-// run if called directly
+// run only if called directly
 if (require.main === module) {
 
 	const fs = require("node:fs");
 	const path = require("node:path");
+	const debug = require("../lib/debug");
 	const cluster = require("node:cluster");
 	const retrieve = require("../lib/retrieve");
+
+	process.env.DEBUG = process.env.DEBUG || "tileblaster";
 
 	if (cluster.isPrimary) {
 		let worker;
