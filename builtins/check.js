@@ -98,7 +98,7 @@ module.exports = function({ req, res, opts, data }, next){
 			if (data.params.x < opts.bounds[data.params.z][0] || data.params.x > opts.bounds[data.params.z][2]) return next(new Error("x is out of bounds."));
 		} else {
 			// bounds span antimeridian
-			if (data.params.x > opts.bounds[data.params.z][0] || data.params.x < opts.bounds[data.params.z][2]) return next(new Error("x is out of bounds, bounds span antimeridian"));
+			if (data.params.x > opts.bounds[data.params.z][0] && data.params.x < opts.bounds[data.params.z][2]) return next(new Error("x is out of bounds, bounds span antimeridian"));
 		}
 		if (data.params.y < opts.bounds[data.params.z][1] || data.params.y > opts.bounds[data.params.z][3]) return next(new Error("y is out of bounds."));
 	}
