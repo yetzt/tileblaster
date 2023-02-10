@@ -38,7 +38,7 @@ module.exports = function({ req, res, opts, data }, next){
 
 			// clamp tile index to max extent of zoom level
 			function clamp(v,z) {
-				return Math.max(0,Math.min(Math.pow(2,z)-1,z));
+				return Math.max(0,Math.min(Math.pow(2,z)-1,v));
 			};
 
 			// tile x of zoom level from longitude
