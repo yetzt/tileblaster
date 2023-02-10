@@ -29,5 +29,8 @@
   "engines": {
     "node": ">=14"
   },
-  "os": [ "darwin", "linux" ]
+  "os": [
+    "darwin",
+    "linux"
+  ]
 }
