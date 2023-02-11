@@ -33,6 +33,12 @@ module.exports = function({ req, res, opts, data }, next){
 			};
 			opts = cache[data.map];
 
+			// check if action is unnessecary
+			if (opts.expires === true) {
+				debug.warn("Cache: Skipping due to immediate expiration in map %s", data.map.magenta);
+				return next();
+			};
+
 			// ensure unique tiles FIXME
 
 			// all the unique tiles
