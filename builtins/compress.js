@@ -28,10 +28,7 @@ module.exports = function({ req, res, opts, data }, next){
 		return next();
 	};
 
-	// find all uncompressed tiles, unique by mime type
-	data.tiles = Object.values([ data.tile, ...data.tiles ].reduce(function(tiles, tile){
-		return tiles[tile.filetype+tile.mimetype] = tile, tiles;
-	},{}));
+	// ensure unique tiles FIXME
 
 	// compress all uncompressed tiles
 	Promise.allSettled(data.tiles.filter(function(tile){

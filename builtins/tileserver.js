@@ -92,6 +92,9 @@ module.exports = function({ req, res, opts, data }, next){
 		// keep around? FIXME
 		// data.tile.sourceHeaders = resp.headers;
 
+		// add primary tile to tile stack
+		data.tiles.push(data.tile);
+
 		// deliver
 		next();
 

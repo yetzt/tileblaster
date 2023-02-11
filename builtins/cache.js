@@ -33,10 +33,7 @@ module.exports = function({ req, res, opts, data }, next){
 			};
 			opts = cache[data.map];
 
-			// ensure unique tiles TODO remove this, ensure tiles is filled from tileserver
-			data.tiles = Object.values([ data.tile, ...data.tiles ].reduce(function(tiles, tile){
-				return tiles[JSON.stringify(tile.params)]=tile,tiles;
-			},{}));
+			// ensure unique tiles FIXME
 
 			// all the unique tiles
 			Promise.allSettled(
