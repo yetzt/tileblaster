@@ -21,7 +21,8 @@
 	* [ ] GDAL?
 * [ ] Builtins
 	* [x] Compression → `builtin/compress.js`
-	* [ ] Caching to Disk
+	* [x] Caching to Disk
+		* [ ] Reading cached tile from Disk
 	* [ ] Memcache → https://www.npmjs.com/package/iomem
 * [ ] Tile Backends
 	* [x] ZXY Webtiles → `builtin/tileserver.js`
