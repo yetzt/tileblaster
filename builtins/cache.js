@@ -72,9 +72,18 @@ module.exports = function({ req, res, opts, data }, next){
 						// see if tile exists, check if replacement needed,
 						fs.stat(destfile, function(err, stats){
 
-							// console.log(err, stats); // FIXME check if writing is nessecary
+							// check if cached tile is still good
+							// FIXME so this before setting headers?
+							if (!err && !opts.expires) {
+								debug.info("Cache: Saved tile %s valid forever", path.relative(config.paths.data, destfile).magenta);
+								return resolve();
+							}
 
-							// fs.writeFile;
+							if (!err && stats.mtimeMs+opts.expires > Date.now()) {
+								debug.info("Cache: Saved tile %s still valid", path.relative(config.paths.data, destfile).magenta);
+								tile.headers["expires"] = new Date(stats.mtimeMs+opts.expires).toUTCString();
+								return resolve();
+							}
 
 							// console.log(tile.headers);
 							let tmpfile = destfile+".tmp";
