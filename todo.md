@@ -66,6 +66,7 @@
 * [ ] figure out graceful reload / restart, signal handling
 * [-] make logging and output consistant
 * [x] allow bounds to span antimeridian
+* [ ] ensure all tiles in tilestack are unique
 
 ## Format Support
 
