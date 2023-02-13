@@ -30,7 +30,7 @@ const tileblaster = module.exports = function tileblaster(config){
 
 	// load builtins
 	self.builtins = {};
-	self.loadBuiltins([ "cors", "parse", "check", "noop", "tileserver", "compress", "cache", "memcache", "deliver", "dump" ]);
+	self.loadBuiltins([ "cors", "parse", "check", "noop", "tileserver", "compress", "cache", "memcache", "deliver", "dump", "modernize" ]);
 
 	// assemble task lists for maps
 	self.maps = {};

@@ -76,11 +76,19 @@ const config = module.exports = {
 			plugin: "resize",
 			size: [ 256, 256 ], // width, height
 		},{
-			plugin: "convert",
-			to: [ "webp", "avif" ]
-		},{
 			plugin: "optimize",
 			methods: [ "mozjpeg", "optipng", "zopflipng", "svgo", "..." ],
+		},{
+			// convert raster tiles to webp and/or avif
+			builtin: "modernize",
+			webp: {
+				quality: 90,
+				effort: 4,
+			},
+			avif: {
+				quality: 90,
+				effort: 5,
+			},
 		},{
 			builtin: "compress",
 			brotli: 8, // true or <level> or {opts}
