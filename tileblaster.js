@@ -11,6 +11,8 @@ const tasks = require("./lib/tasks");
 const load = require("./lib/load");
 const mime = require("./lib/mime");
 
+const sharp = load("sharp"); // optional dep
+
 const tileblaster = module.exports = function tileblaster(config){
 	if (!(this instanceof tileblaster)) return new tileblaster(...arguments);
 	const self = this;
@@ -20,7 +22,7 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.configure(config);
 
 	// libraries (expose to plugins)
-	self.lib = { retrieve, debug, load, tasks, mime, strtpl };
+	self.lib = { retrieve, debug, load, tasks, mime, strtpl, sharp };
 
 	// plugins
 	self.plugins = {};
