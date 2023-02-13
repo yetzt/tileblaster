@@ -57,12 +57,12 @@ if (require.main === module) {
 		const tileblaster = require("../tileblaster");
 		tileblaster({
 			version: 1,
-			listen: [{ port: 8080 }],
+			listen: [{ port: 28897 }],
 			maps: { example: [] },
 			...require("../config"),
 		});
 
-		retrieve("http://127.0.0.1:8080/example/0/0/0.png", function(){});
+		// retrieve("http://127.0.0.1:28897/example/0/0/0.png", function(){});
 
 	}
 };
