@@ -3,7 +3,7 @@ const dur = require("dur");
 const path = require("path");
 const xattr = require("fs-xattr");
 
-const cache = {};
+const cache = { store: {}, get: {} };
 
 // file cache
 module.exports = function({ req, res, opts, data }, next){
@@ -25,13 +25,13 @@ module.exports = function({ req, res, opts, data }, next){
 
 			// store opts
 			// true: expired instantly, false: expires never, number: seconds, string: parse
-			if (!cache.hasOwnProperty(data.map)) cache[data.map] = {
+			if (!cache.store.hasOwnProperty(data.map)) cache.store[data.map] = {
 				expires: (!opts.expires) ? false :
 				(typeof opts.expires === "boolean") ? opts.expires :
 				(typeof opts.expires === "number") ? ((Number.isFinite(opts.expires)) ? Math.max(0,Math.round(opts.expires*1000)) : (opts.expires > 0)) || true :
 				(typeof opts.expires === "string") ? dur(opts.expires, true) : true,
 			};
-			opts = cache[data.map];
+			opts = cache.store[data.map];
 
 			// check if action is unnessecary
 			if (opts.expires === true) {
