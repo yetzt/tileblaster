@@ -11,6 +11,8 @@ module.exports = function({ req, res, opts, data }, next){
 	if (!cache.hasOwnProperty(data.map)) {
 		cache[data.map] = {};
 
+		cache[data.map].url = opts.url;
+
 		// success codes, convert to int, filter crap, default 200
 		cache[data.map].status = (opts.hasOwnProperty("status")) ? Array.isArray(opts.status) ? opts.status : [ opts.status ] : [ 200 ];
 		cache[data.map].status.map(function(status){ return parseInt(status,10); }).filter(function(status){ return !isNaN(status); });
@@ -32,70 +34,69 @@ module.exports = function({ req, res, opts, data }, next){
 		cache[data.map].headers = (opts.hasOwnProperty("headers")) ? opts.headers : {};
 
 	};
+	opts = cache[data.map];
 
 	// clone params for request
-	const params = { ...data.params };
+	const params = { ...data.req.params };
 
 	// flip y for tms maps
-	if (cache[data.map].tms) params.y = Math.pow(2,params.z)-params.y-1;
+	if (opts.tms) params.y = Math.pow(2,params.z)-params.y-1;
 
 	// set subdomain if configured
-	if (cache[data.map].subdomains) params.s = cache[data.map].subdomains[ Date.now() % cache[data.map].subdomains.length ];
+	if (opts.subdomains) params.s = opts.subdomains[ Date.now() % opts.subdomains.length ];
 
-	// construct url
-	data.tile.url = strtpl(opts.url, params);
+	const tileurl = strtpl(opts.url, params);
 
-	debug.info("Fetching %s", data.tile.url);
+	// FIXME check fails cache
+
+	debug.info("Fetching %s", tileurl);
 
 	// request
 	retrieve({
-		url: data.tile.url,
+		url: tileurl,
 		headers: {
-			...cache[data.map].headers,
+			...opts.headers,
 		},
 		followRedirects: true,
 		compression: true,
 		timeout: 10000,
 	}).then(function(resp){
 
-		// check status code
-		if (cache[data.map].status && !cache[data.map].status.includes(resp.statusCode)) return next(new Error("Source Tileserver responded with statusCode "+resp.statusCode)); // FIXME set response status?
+		// FIXME cache fails
 
-		const mimetypeComplete = (resp.headers["content-type"]||"application/octet-stream").trim().toLowerCase(); // FIXME keep the charset? parse?
-		const mimetype = mimetypeComplete.split(";").shift().trim(); // FIXME keep the charset? parse?
+		// check response status code
+		if (opts.status && !opts.status.includes(resp.statusCode)) return next(new Error("Source Tileserver responded with statusCode "+resp.statusCode)); // FIXME set response status?
 
-		if (cache[data.map].mimetypes && !cache[data.map].mimetypes.includes(mimetype) && !cache[data.map].mimetypes.includes(mimetypeComplete)) return next(new Error("Source Tileserver responded with mime-type "+mimetype));
+		// get respose media type
+		const contenttype = (resp.headers["content-type"]||"application/octet-stream").trim().toLowerCase();
+		const mediatype = contenttype.includes(";") ? contenttype.slice(0, contenttype.indexOf(";")) : contenttype;
 
-		// FIXME this is a mess full of redundant information and undocumented, refactor
+		// check response mime type
+		if (opts.mimetypes && !opts.mimetypes.includes(mediatype)) return next(new Error("Source Tileserver responded with disallowed mime-type "+mediatype));
 
 		// set tile
-		data.tile.buffer = resp.body;
-		data.tile.compression = false; // http client always delivers uncompressed
-		data.tile.mimetype = opts.mimetype || mimetypeComplete; // override via opts
-		data.tile.filetype = opts.filetype || mime.filetype(opts.mimetype || mimetype, data.params.e);
-
-		// params
-		data.tile.params = { // tile-specific params, to be changed per-tile
-			...data.params,
-			c: null, // no compression
-			e: data.params.e || data.tile.filetype,
-			f: data.params.f || "."+data.tile.filetype,
-		};
+		const tile = {};
+		tile.path = data.req.path;
+		tile.buffer = resp.body;
+		tile.mimetype = opts.mimetype || mediatype; // override via opts
+		tile.type = opts.filetype || mime.filetype(opts.mimetype || mediatype, data.req.params.e);
 
 		// http response
-		data.tile.status = (data.tile.buffer.length > 0) ? 200 : 204;
-		data.tile.headers = { // tile-specific response headers
-			"content-type": data.tile.mimetype,
-			"content-length": data.tile.buffer.length,
-		};
+		tile.status = (tile.buffer.length > 0) ? 200 : 204;
+
+		// defaults
+		tile.headers = {};
+		tile.compression = false; // http client always delivers uncompressed
+		tile.language = null;
+		tile.expires = true; // default policy
 
 		// keep around? FIXME
 		// data.tile.sourceHeaders = resp.headers;
 
-		// add primary tile to tile stack
-		data.tiles.push(data.tile);
+		// add to tile stack, set primary tile
+		data.tiles.unshift(tile);
+		data.tile = tile;
 
-		// deliver
 		next();
 
 	}).catch(function(err){

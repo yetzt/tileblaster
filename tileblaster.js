@@ -75,22 +75,27 @@ const tileblaster = module.exports = function tileblaster(config){
 
 		// assemble args and initial data
 		const args = {
-			req, res, // TODO
+			req, res,
 			data: {
 				map: req.map,
-				path: req.path,
-				tilepath: req.tilepath,
-				steps: req.steps,
-				dest: req.tilepath, // template!
-				params: {},
-				headers: {}, // response headers
+				req: {},
 				tile: {
-					buffer: Buffer.alloc(0),
-					headers: {}, // response header specific to tile
-					type: null,
-					dest: null,
+					default: true,
+					// default tile
+					dest: req.path, // destination file - modification use extensions?
+					buffer: Buffer.alloc(0), // empty buffer
+					status: 204,
+					headers: {
+						"expires": new Date(Date.now()).toUTCString(),
+					}, // response header specific to tile
+					// explicit mimetye
+					mimetype: "application/octet-stream", // mimetype
+					type: "bin", // type
+					compression: false,
+					language: null,
+					expires: true, // instant expires
 				},
-				tiles: [], // holds alternative versions (conversion, compression, etc)
+				tiles: [], // modified versions
 			}
 		};
 

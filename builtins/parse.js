@@ -1,17 +1,31 @@
-// parse path into params
+// parse client request
 
 module.exports = function({ req, res, opts, data }, next){
 
+	data.req = {};
+
+	data.req.path = req.path;
+
+	// cache things
+	data.req.etag = req.headers["if-none-match"] || null;
+	data.req.last = req.headers["if-modified-since"] || null;
+
 	// examine some headers for capabilities
-	data.capabilities = {
+	data.req.supports = {
 		webp: (req.headers.accept||"").includes("image/webp"),
 		avif: (req.headers.accept||"").includes("image/avif"),
 		br: (req.headers["accept-encoding"]||"").includes("br"),
 		gz: (req.headers["accept-encoding"]||"").includes("gzip"),
-		languages: (!!req.headers["accept-language"]) ? req.headers["accept-language"].split(",").map(function(lang){
-			return lang.split(";").shift().trim();
-		}) : null,
 	};
+
+	// languages
+	data.req.lang = ((!!req.headers["accept-language"]) ? req.headers["accept-language"].split(",").map(function(lang){
+		return lang.split(";").shift().trim();
+	}) : []).map(function(lang){
+		return lang.slice(0,2).toLowerCase();
+	}).filter(function(lang,i,languages){
+		return languages.indexOf(lang) === i;
+	});
 
 	// patch in override parse function
 	if (opts.hasOwnProperty("parse") && typeof opts.parse === "function") return opts.parse(req, function(err, params){
@@ -20,24 +34,19 @@ module.exports = function({ req, res, opts, data }, next){
 		next();
 	});
 
-	// get params from steps FIXME: defaults from opts
-	data.params = {
-		...data.params,
+	// get params from steps
+	data.req.params = {
 		m: data.map,
-		z: parseInt(data.steps[1],10), // zoom
-		x: parseInt(data.steps[2],10), // lon
-		y: parseInt(data.steps[3],10), // lat
-		r: data.steps[3].includes("@") ? data.steps[3].slice(data.steps[3].indexOf("@"), data.steps[3].indexOf("x")+1) : null, // density marker ("@2x")
-		f: data.steps[3].includes(".") ? data.steps[3].slice(data.steps[3].indexOf(".")) : null, // extension, including dot
-		c: null,
+		x: parseInt(req.steps[2],10), // lon
+		y: parseInt(req.steps[3],10), // lat
+		z: parseInt(req.steps[1],10), // zoom
+		r: req.steps[3].includes("@") ? req.steps[3].slice(req.steps[3].indexOf("@"), req.steps[3].indexOf("x")+1) : "", // raw density marker ("@2x")
+		e: req.steps[3].includes(".") ? req.steps[3].slice(req.steps[3].indexOf(".", Math.max(0,req.steps[3].indexOf("x")))+1) : null, // extension
 	};
 
-	// compat
-	data.params.d = data.params.r && parseFloat(data.params.r.slice(1,-1)); // density as float
-	data.params.e = data.params.f && data.params.f.slice(1); // extension without dot
-
-	// destination template for cache
-	data.dest = "/{m}/{z}/{x}/{y}{r}{f}{c}";
+	// density options
+	data.req.params.d = data.req.params.r ? parseFloat(data.req.params.r.slice(1,-1)) : 1;
+	data.req.params.w = Math.round(data.req.params.d * 256);
 
 	next();
 };
