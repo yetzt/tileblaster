@@ -27,7 +27,7 @@
 * [ ] Tile Backends
 	* [x] ZXY Webtiles → `builtin/tileserver.js`
 	* [x] TMS Webtiles → `builtin/tileserver.js`
-	* [ ] Versatiles
+	* [x] Versatiles
 	* [ ] PMTiles
 	* [ ] MBTiles?
 	* [ ] WMS?
