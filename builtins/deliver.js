@@ -23,7 +23,7 @@ module.exports = function({ res, opts, data }, next){
 		"content-type": data.tile.mimetype,
 		"content-length": data.tile.buffer.length,
 	}).forEach(function([ k, v ]){
-		res.setHeader(k, v); // FIXME v as function()?
+		res.setHeader(k, v);
 	});
 
 	// send as stream
