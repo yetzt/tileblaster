@@ -24,7 +24,8 @@
     "colrz": "^0.0.4",
     "dur": "^1.0.1",
     "fs-xattr": "^0.3.1",
-    "phin": "^3.7.0"
+    "phin": "^3.7.0",
+    "versatiles": "^0.3.0"
   },
   "optionalDependencies": {
     "sharp": "^0.31.3"
