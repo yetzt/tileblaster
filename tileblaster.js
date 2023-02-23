@@ -163,9 +163,11 @@ tileblaster.prototype.prepareJobs = function(mapid, map){
 		// job is builtin
 		if (job.hasOwnProperty("builtin")) {
 			if (self.builtins.hasOwnProperty(job.builtin)) {
-				return function(args, fn){
-					return self.builtins[job.builtin].call(self, { ...args, opts: job }, fn);
+				const fn = function(args, next, skip){
+					return self.builtins[job.builtin].call(self, { ...args, opts: job }, next, skip);
 				};
+				fn.label = job.builtin;
+				return fn;
 			} else {
 				// unknown plugin, pass through
 				debug.warn("Unknown builtin '%s' in map '%s'", job.builtin, mapid);
@@ -176,9 +178,11 @@ tileblaster.prototype.prepareJobs = function(mapid, map){
 		// job is plugin
 		if (job.hasOwnProperty("plugin")) {
 			if (self.plugins.hasOwnProperty(job.plugin)) {
-				return function(args, fn){
-					return self.plugins[job.plugin].call(self, { ...args, opts: job }, fn);
+				const fn = function(args, next, skip){
+					return self.plugins[job.plugin].call(self, { ...args, opts: job }, next, skip);
 				};
+				fn.label = "plugin:"+job.plugin;
+				return fn;
 			} else {
 				// unknown plugin, pass through
 				debug.warn("Unknown plugin '%s' in map '%s'", job.plugin, mapid);
