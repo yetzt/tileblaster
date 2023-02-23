@@ -60,6 +60,9 @@ const config = module.exports = {
 			check: function(params, fn) { // override check function, params from parse
 				fn(new Error("Check failed")); // deliver error if check failed
 			}
+		},{ // get from cache, skip to `skipto` if successful
+			builtin: "cache",
+			skipto: "deliver",
 		},{
 			builtin: "noop",
 			// FIXME: get from cache or memcache? need to figure out formats, need to figure out compression

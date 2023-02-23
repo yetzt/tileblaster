@@ -3,146 +3,163 @@ const dur = require("dur");
 const path = require("path");
 const xattr = require("fs-xattr");
 
-const cache = { store: {}, get: {} };
+const cache = {};
 
 // file cache
-module.exports = function({ req, res, opts, data }, next){
+module.exports = function({ opts, data, res }, next, skip){
 	const debug = this.lib.debug;
-	const strtpl = this.lib.strtpl;
 	const config = this.config;
 
-	// from cache or to?
-	switch (opts.action) {
-		case "retrieve":
-		case "read":
-		case "get":
-			return next(); // TODO
-		break;
-		case "store":
-		case "write":
-		case "set":
-		default:
+	// cache opts
+	if (!cache.hasOwnProperty(data.map)) {
 
-			// store opts
-			// true: expired instantly, false: expires never, number: seconds, string: parse
-			if (!cache.store.hasOwnProperty(data.map)) cache.store[data.map] = {
-				expires: (!opts.expires) ? false :
-				(typeof opts.expires === "boolean") ? opts.expires :
-				(typeof opts.expires === "number") ? ((Number.isFinite(opts.expires)) ? Math.max(0,Math.round(opts.expires*1000)) : (opts.expires > 0)) || true :
-				(typeof opts.expires === "string") ? dur(opts.expires, true) : true,
+		// store instance
+		cache.store = this.lib.store({ root: config.paths.data });
+
+		// merge opts of all uses of the cache builtin in a map config
+		opts = config.maps[data.map].filter(function(use){
+			return use.builtin === "cache";
+		}).reduce(function(opts, useopts){
+			return Object.entries(useopts).reduce(function(opts, [k,v]){
+				return opts[k]=v,opts;
+			}, opts);
+		},{});
+
+		cache[data.map] = {};
+
+		// skipto
+		cache[data.map].skipto = opts.skipto || false; // FIXME check valid label?
+
+		// true: expires instantly, false: expires never, number: seconds, string: parse
+		if (opts.hasOwnProperty("expires")) {
+			switch (typeof opts.expires) {
+				case "boolean":
+					cache[data.map].expires = opts.expires;
+				break;
+				case "number":
+					cache[data.map].expires = ((Number.isFinite(opts.expires)) ? Math.max(0,Math.round(opts.expires*1000)) : (opts.expires > 0)) || true;
+				break;
+				case "string":
+					cache[data.map].expires = dur(opts.expires, true);
+				break;
+				default:
+					cache[data.map].expires = true; // expires immediately
+				break;
+			}
+		} else {
+			cache[data.map].expires = false;
+		}
+
+	};
+	opts = cache[data.map];
+	const store = cache.store;
+
+	// if tile length is empty, retrieve. otherwise save
+	if (data.tiles.length === 0) {
+
+		// find extensions
+		let extensions = Object.entries(data.req.supports).reduce(function(extensions, [ext, supports]){
+			if (supports) extensions.push(ext);
+			return extensions;
+		},[]);
+
+		// get from storage
+		return store.find(data.req.path, extensions, function(err, tile){
+			if (err) return debug.error("Cache: Could not find %s: %s", data.req.path, err), next();
+			if (!tile) return next();
+
+			// check etag
+			if (data.req.etag && tile.attr.headers && data.req.etag === tile.attr.headers.etag) {
+				res.statusCode = 304;
+				res.end();
+				res.used = true;
+				return skip(); // skip rest of jobs
 			};
-			opts = cache.store[data.map];
 
-			// check if action is unnessecary
-			if (opts.expires === true) {
-				debug.warn("Cache: Skipping due to immediate expiration in map %s", data.map.magenta);
-				return next();
+			// check last-modified
+			if (data.req.last && tile.stats && data.req.last < tile.stats.mtimeMs) {
+				res.statusCode = 304;
+				res.end();
+				res.used = true;
+				return skip(); // skip rest of jobs
 			};
 
-			// ensure unique tiles FIXME
+			// if skipto is set, build tile data from cache and skip
+			if (opts.skipto) {
 
-			// all the unique tiles
-			Promise.allSettled(
-				data.tiles.map(function(tile){
-					return new Promise(function(resolve, reject){
+				data.tile = tile.attr;
+				fs.readFile(tile.file, function(err, buf){
+					if (err) return debug.error("Cache: Could not read %s: %s", tile.file, err), next();
 
-						// console.log(opts.expires);
+					data.tile.buffer = buf;
+					data.tiles.push(data.tile);
 
-						// set cache headers
-						// TODO consult someone who understands all these better
-						const expires = Date.now() * opts.expires;
-						switch (opts.expires) {
-							case false: // never
-								tile.headers["cache-control"] = "min-age=86400"; // but come back in a while anyway
-							break;
-							case true: // instant
-								tile.headers["expires"] = new Date(Date.now()).toUTCString();
-								tile.headers["cache-control"] = "no-cache, max-age=0, must-revalidate";
-							break;
-							default: // set duration
-								tile.headers["expires"] = new Date(Date.now()+opts.expires).toUTCString();
-								tile.headers["cache-control"] = "public, max-age="+Math.round(opts.expires/1000)+", must-revalidate";
-							break;
-						};
+					skip(opts.skipto);
+				});
 
-						// find dest
-						tile.dest = strtpl(data.dest, tile.params);
-						let destfile = path.resolve(config.paths.data, path.isAbsolute(tile.dest) ? tile.dest.slice(1) : tile.dest);
+			} else { // send tile to client
 
-						// see if tile exists, check if replacement needed,
-						fs.stat(destfile, function(err, stats){
+				// if tile buffer is empty, return 204
+				if (tile.stats.size === 0) {
+					res.statusCode = 204;
+					res.used = true;
+					res.end();
+					return skip(); // skip rest of jobs
+				}
 
-							// check if cached tile is still good
-							// FIXME so this before setting headers?
-							if (!err && !opts.expires) {
-								debug.info("Cache: Saved tile %s valid forever", path.relative(config.paths.data, destfile).magenta);
-								return resolve();
-							}
+				// set status and content-type
+				res.statusCode = tile.attr.status;
 
-							if (!err && stats.mtimeMs+opts.expires > Date.now()) {
-								debug.info("Cache: Saved tile %s still valid", path.relative(config.paths.data, destfile).magenta);
-								tile.headers["expires"] = new Date(stats.mtimeMs+opts.expires).toUTCString();
-								return resolve();
-							}
+				// set headers
+				Object.entries({
+					...tile.attr.headers, // tile-specific
+					"content-type": tile.attr.mimetype,
+					"content-length": tile.stats.size,
+				}).forEach(function([ k, v ]){
+					res.setHeader(k, v);
+				});
 
-							// console.log(tile.headers);
-							let tmpfile = destfile+".tmp";
+				// send as stream
+				fs.createReadStream(tile.file).pipe(res);
+				res.used = true;
 
-							// create bas path
-							fs.mkdir(path.dirname(tmpfile), { recursive: true }, function(err){
-								if (err) {
-									debug.error("Cache: create path %s to disk: %s", path.relative(config.paths.data, path.dirname(tmpfile)).magenta, err);
-									return reject();
-								};
+				skip();
 
-								fs.writeFile(tmpfile, tile.buffer, function(err){
-									if (err) {
-										debug.error("Cache: write %s to disk: %s", path.relative(config.paths.data, tmpfile).magenta, err);
-										fs.unlink(tmpfile, function(){}); // attempt unlinking
-										return reject();
-									}
+			}
 
-									// write xattr
-									// they should include anything we need for serving an cache cleaning
-									xattr.set(tmpfile, "user.tileblaster", JSON.stringify({
-										expires: (typeof opts.expires === "boolean") ? opts.expires : Date.now()+opts.expires,
-										status: tile.status,
-										headers: tile.headers,
-									})).then(function(err){
-										if (err) {
-											debug.error("Cache: xattr for %s: %s", path.relative(config.paths.data, tmpfile).magenta, err);
-											fs.unlink(tmpfile, function(){}); // attempt unlinking
-											return reject();
-										}
+		});
 
-										// switch tmp → file
-										fs.rename(tmpfile, destfile, function(err){
-											if (err) {
-												debug.error("Cache: move %s → %s: %s", path.relative(config.paths.data, tmpfile).magenta, path.relative(config.paths.data, destfile).magenta, err);
-												fs.unlink(tmpfile, function(){}); // attempt unlinking
-												return reject();
-											}
+	} else {
 
-											debug.info("Cache: saved %s", path.relative(config.paths.data, destfile).magenta);
-											resolve();
-
-										});
-
-									});
-
-								});
-
-							});
-
-						});
-
-					});
-				})
-			).then(function(){
-				next();
+		// set expires on all tiles
+		if (opts.expires !== false) {
+			let expires = Date.now()+opts.expires;
+			data.tile.expires = expires;
+			data.tiles.forEach(function(tile){
+				tile.expires = expires;
 			});
+		}
 
-		break;
+		// FIXME set etag, last-modified?
+
+		// no need to wait for files to get stored
+		next();
+
+		// skip storing if tiles expire immediately
+		if (opts.expires === true) return debug.warn("Cache: Skipping due to immediate expiration in map %s", data.map.magenta);
+
+		// store all tiles if not stored
+		Promise.allSettled(data.tiles.map(function(tile){
+
+
+			return new Promise(function(reject, resolve){
+				store.put(tile, function(err){
+					if (err) return debug.warn("Cache: Error storing %s: %s", tile.path.magenta, err), reject(err);
+					return debug.info("Cache: Stored %s", tile.path.magenta), resolve();
+				});
+			});
+		}));
+
 	}
 
 };
