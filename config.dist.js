@@ -73,6 +73,14 @@ const config = module.exports = {
 			mimetypes: [ "image/png", "image/jpeg" ], // expected mime types
 			mimetype: "image/png", // overwrite mime type from server
 		},{
+			// get tile from versatiles container
+			builtin: "versatiles",
+			url: "https://cdn.example/planet.versatiles",
+			tms: false, // y coordinate is inverted
+			headers: { // headers sent to versatiles server
+				"X-Tileblaster": "True",
+			},
+		},{
 			plugin: "resize",
 			size: [ 256, 256 ], // width, height
 		},{
