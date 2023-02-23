@@ -13,25 +13,39 @@
 * [-] Plugin Interface
 * [x] Plugin/Task Runner
 * [ ] Plugins
+	* [ ] Nginx Cache Hydration
 	* [ ] Vectortiles Editor → https://www.npmjs.com/package/vtt
 	* [ ] Resize and Convert Raster Tiles → https://www.npmjs.com/package/sharp
+	* [ ] Memcache → https://www.npmjs.com/package/iomem
 	* [ ] Convert Geojson ↔ Topojson
-	* [ ] Convert Raster Formats (png,jpeg → webp,avif)
 	* [ ] Redirects
 	* [ ] GDAL?
-* [ ] Builtins
+* [-] Builtins
+	* [x] CORS
+	* [x] Parse Request
+	* [x] Check Request
+	* [x] Tile Backends
+		* [x] ZXY Webtiles → `builtin/tileserver.js`
+		* [x] TMS Webtiles → `builtin/tileserver.js`
+		* [x] Versatiles
+		* [ ] PMTiles?
+		* [ ] MBTiles?
+		* [ ] WMS?
+		* [ ] From tile.json → Expand jobs with .push()?
 	* [x] Compression → `builtin/compress.js`
-	* [x] Caching to Disk
-		* [ ] Reading cached tile from Disk
-	* [ ] Memcache → https://www.npmjs.com/package/iomem
-* [ ] Tile Backends
-	* [x] ZXY Webtiles → `builtin/tileserver.js`
-	* [x] TMS Webtiles → `builtin/tileserver.js`
-	* [x] Versatiles
-	* [ ] PMTiles
-	* [ ] MBTiles?
-	* [ ] WMS?
-	* [ ] From tile.json → Expand jobs with .push()
+	* [ ] Optimization (optipng, mozjpeg, svgo, pbfcrop)
+	* [x] Modernize Raster Formats (png,jpeg → webp,avif)
+	* [-] Caching to Disk
+		* [x] Reading cached tile from Disk
+		* [x] Skipping Jobs
+		* [x] Etag Headers
+		* [x] Last-Modified Headers
+		* [x] Don't store if expired
+		* [ ] Expires Headers
+		* [ ] Cache-Control Headers
+		* [ ] Don't update if already cached (in case of store-only)
+	* [x] Delivery
+	* [x] Debug Dump
 * [ ] Cache Cleaning Worker
 * [ ] Monitoring
 * [ ] Map Web Interface
@@ -52,7 +66,7 @@
 * [ ] Support for Glyphs and Styles, tile.json proxy
 * [ ] Request Queue to throttle unfulfilled requests
 * [x] Custom String Template function for {x} replacement instead of regex
-* [ ] Error wrapper (to pass along http status etc)
+* [ ] Error wrapper (to pass along http status etc)?
 
 ## Notes
 
@@ -68,6 +82,7 @@
 * [-] make logging and output consistant
 * [x] allow bounds to span antimeridian
 * [ ] ensure all tiles in tilestack are unique
+* [ ] hydrate nginx cache directly
 
 ## Format Support
 
