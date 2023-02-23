@@ -8,7 +8,7 @@ module.exports = function({ req, res, opts, data }, next){
 
 	// cache things
 	data.req.etag = req.headers["if-none-match"] || null;
-	data.req.last = req.headers["if-modified-since"] || null;
+	data.req.last = req.headers.hasOwnProperty("if-modified-since") ? Date.parse(req.headers["if-modified-since"]).valueOf() : null;
 
 	// examine some headers for capabilities
 	data.req.supports = {
