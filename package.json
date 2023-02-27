@@ -1,6 +1,6 @@
 {
   "name": "tileblaster",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "pretty fast optimizing & compressing tile caching proxy",
   "main": "lib/tileblaster.js",
   "bin": {
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/yetzt/tileblaster#readme",
   "dependencies": {
-    "dur": "^1.0.1",
+    "dur": "^0.0.3",
     "klaw": "^4.1.0",
     "minimist": "^1.2.8",
     "node-watch": "^0.7.3",
