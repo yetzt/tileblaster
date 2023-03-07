@@ -88,7 +88,8 @@ const config = module.exports = {
 			size: [ 256, 256 ], // width, height
 		},{
 			plugin: "optimize",
-			methods: [ "mozjpeg", "optipng", "zopflipng", "svgo", "..." ],
+			png: { o: 4 }, // true or opts for optipng
+			jpeg: true, // true or opts for mozjpeg
 		},{
 			// convert raster tiles to webp and/or avif
 			builtin: "modernize",

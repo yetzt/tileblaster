@@ -33,7 +33,7 @@
 		* [ ] WMS?
 		* [ ] From tile.json → Expand jobs with .push()?
 	* [x] Compression → `builtin/compress.js`
-	* [ ] Optimization (optipng, mozjpeg, svgo, pbfcrop)
+	* [x] Optimization (optipng, mozjpeg, svgo?, pbfcrop?)
 	* [x] Modernize Raster Formats (png,jpeg → webp,avif)
 	* [-] Caching to Disk
 		* [x] Reading cached tile from Disk
