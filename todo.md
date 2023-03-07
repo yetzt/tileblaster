@@ -20,6 +20,7 @@
 	* [ ] Convert Geojson ↔ Topojson
 	* [ ] Redirects
 	* [ ] GDAL?
+	* [ ] Render Tiles with MapLibreGL-Native
 * [-] Builtins
 	* [x] CORS
 	* [x] Parse Request
@@ -44,6 +45,7 @@
 		* [ ] Expires Headers
 		* [ ] Cache-Control Headers
 		* [ ] Don't update if already cached (in case of store-only)
+		* [ ] Store in MBTiles or similar?
 	* [x] Delivery
 	* [x] Debug Dump
 * [ ] Cache Cleaning Worker
