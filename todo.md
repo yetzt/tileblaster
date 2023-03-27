@@ -60,15 +60,17 @@
 	* [ ] All config options
 	* [ ] All builtins
 	* [ ] Example setups
-* [ ] CLI
-	* [-] Dev Server
-	* [-] Cluster Support
-	* [ ] Nodemon / PM2 Integration
-	* [ ] Standalone Daemon with pid files?
+* [x] CLI
+	* [x] Cluster Support
+	* [x] PM2 Integration
+	* [x] Rudimentary Dev Server
+	* [ ] ~Standalone Daemon with pid files?~
 * [ ] Support for Glyphs and Styles, tile.json proxy
 * [ ] Request Queue to throttle unfulfilled requests
 * [x] Custom String Template function for {x} replacement instead of regex
 * [ ] Error wrapper (to pass along http status etc)?
+* [ ] Footprint
+	* [ ] Replace Phin?
 
 ## Notes
 
