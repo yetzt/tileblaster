@@ -45,13 +45,13 @@ if (require.main === module) {
 			shutdown = true;
 			debug.info("\nShutdown initiated".white.bold);
 			pool.forEach(function(worker,n){
-				debug.info("Sending SIGTERM to Worker #%d".white.bold, n);
-				worker.kill();
+				debug.info("Sending shutdown message to Worker #%d".white.bold, n);
+				worker.send("shutdown");
 			});
 			setTimeout(function(){
 				debug.warn("Exiting Non-Graceful".white.bold);
 				process.exit(1);
-			},2900)
+			},2900);
 		});
 
 		// watch config file for changes, reload workers on change
@@ -59,7 +59,7 @@ if (require.main === module) {
 		watch(config._file, {}).on("change", function(evt){
 			debug.info("Config file change detected, restarting Workers".white.bold);
 			pool.forEach(function(worker,n){
-				worker.kill();
+				worker.send("shutdown");
 			});
 		});
 
