@@ -2,6 +2,8 @@
 
 ## Roadmap
 
+### 1.0 Release
+
 * [x] Config format
 	* [x] Map format
 	* [x] Tasks fomat
@@ -48,10 +50,7 @@
 		* [ ] Store in MBTiles or similar?
 	* [x] Delivery
 	* [x] Debug Dump
-* [ ] Cache Cleaning Worker
-* [ ] Monitoring
-* [ ] Map Web Interface
-* [ ] Config Web Interface
+* [x] Cache Cleaning Worker
 * [ ] Documentation
 	* [ ] What is Tileblaster, what is the benefit for the user
 	* [ ] What can't tileblaster do
@@ -60,13 +59,21 @@
 	* [ ] All config options
 	* [ ] All builtins
 	* [ ] Example setups
+	* [ ] Example Config
+	* [ ] Example Nginx Config
 * [x] CLI
 	* [x] Cluster Support
 	* [x] PM2 Integration
 	* [x] Rudimentary Dev Server
 	* [ ] ~Standalone Daemon with pid files?~
-* [ ] Support for Glyphs and Styles, tile.json proxy
 * [ ] Request Queue to throttle unfulfilled requests
+
+### Later
+
+* [ ] Monitoring
+* [ ] Map Web Interface
+* [ ] Config Web Interface
+* [ ] Support for Glyphs and Styles, tile.json proxy
 * [x] Custom String Template function for {x} replacement instead of regex
 * [ ] Error wrapper (to pass along http status etc)?
 * [ ] Footprint
