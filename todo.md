@@ -4,10 +4,10 @@
 
 * [x] Config format
 	* [x] Map format
-		* [-] Tasks fomat (WIP)
+	* [x] Tasks fomat
 * [x] HTTP Server, Port and Socket
-	* [ ] Graceful shutdown
-* [-] Debug Library → `lib/debug.js` WIP
+	* [x] Graceful shutdown
+* [x] Debug Library → `lib/debug.js`
 * [x] Optional Module Loader → `lib/load.js`
 * [x] HTTPs Abstraction (~got or~ phin) → `lib/retrieve.js`
 * [-] Plugin Interface
