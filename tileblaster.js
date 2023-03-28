@@ -133,7 +133,47 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.servers = [];
 	self.listen(self.router.serve);
 
+	// handle messages from main thred
+	process.on("message", function(message){
+		if (message === "shutdown") self.shutdown();
+		// FIXME: reload config without shutdown?
+	});
+
+	// shutdown on SIGINT
+	process.on("SIGINT", function(){
+		debug.info("SIGINT received");
+		self.shutdown();
+	});
+
+	// shutdown on SIGTERM
+	process.on("SIGTERM", function(){
+		debug.info("SIGTERM received");
+		self.shutdown();
+	});
+
 	return this;
+};
+
+// graceful shutdown
+tileblaster.prototype.shutdown = function(){
+	const self = this;
+	if (self.shutdown === true) return; // ensure shutdowen only runs once
+	self.shutdown = true;
+	debug.info("shutting down");
+	let closed = 0;
+	self.servers.forEach(function(server){
+		server.close(function(){
+			if (++closed === self.servers.length) {
+				debug.info("All Servers Closed");
+				process.exit(0);
+			}
+		});
+	});
+	// watchdog
+	setTimeout(function(){
+		debug.warn("Closing servers timed out");
+		process.exit(1);
+	},3000);
 };
 
 // prepare jobs for maps
