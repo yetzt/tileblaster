@@ -12,7 +12,7 @@
 * [x] Debug Library → `lib/debug.js`
 * [x] Optional Module Loader → `lib/load.js`
 * [x] HTTPs Abstraction (~got or~ phin) → `lib/retrieve.js`
-* [-] Plugin Interface
+* [x] Plugin Interface
 * [x] Plugin/Task Runner
 * [ ] Plugins
 	* [ ] Nginx Cache Hydration
@@ -38,16 +38,16 @@
 	* [x] Compression → `builtin/compress.js`
 	* [x] Optimization (optipng, mozjpeg, svgo?, pbfcrop?)
 	* [x] Modernize Raster Formats (png,jpeg → webp,avif)
-	* [-] Caching to Disk
+	* [x] Caching to Disk
 		* [x] Reading cached tile from Disk
 		* [x] Skipping Jobs
 		* [x] Etag Headers
 		* [x] Last-Modified Headers
 		* [x] Don't store if expired
-		* [ ] Expires Headers
-		* [ ] Cache-Control Headers
-		* [ ] Don't update if already cached (in case of store-only)
-		* [ ] Store in MBTiles or similar?
+		* [x] Expires Headers
+		* [x] Don't update if already cached (in case of store-only)
+		* [x] ~Cache-Control Headers~ → Set via `deliver` builtin
+		* [ ] ~Store in MBTiles or similar?~ → Not now
 	* [x] Delivery
 	* [x] Debug Dump
 * [x] Cache Cleaning Worker

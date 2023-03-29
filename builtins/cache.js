@@ -140,8 +140,6 @@ module.exports = function({ opts, data, res }, next, skip){
 			});
 		}
 
-		// FIXME set etag, last-modified?
-
 		// no need to wait for files to get stored
 		next();
 
@@ -150,8 +148,6 @@ module.exports = function({ opts, data, res }, next, skip){
 
 		// store all tiles if not stored
 		Promise.allSettled(data.tiles.map(function(tile){
-
-
 			return new Promise(function(reject, resolve){
 				store.put(tile, function(err){
 					if (err) return debug.warn("Cache: Error storing %s: %s", tile.path.magenta, err), reject(err);
@@ -160,6 +156,5 @@ module.exports = function({ opts, data, res }, next, skip){
 			});
 		}));
 
-	}
-
+	};
 };
