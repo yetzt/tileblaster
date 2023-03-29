@@ -10,7 +10,7 @@ module.exports = function modernize({ opts, data }, next){
 	};
 
 	// check if tile should be optimized
-	if (!["png","jpeg","gif"].includes(data.tile.type)) {
+	if (!["png","jpeg","jpg","gif"].includes(data.tile.type)) {
 		debug.warn("Modernize: Unsupported file type: %s", data.tile.type);
 		return next();
 	};
