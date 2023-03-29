@@ -1,7 +1,7 @@
-const http = require("http");
-const path = require("path");
-const fs = require("fs");
-const os = require("os");
+const http = require("node:http");
+const path = require("node:path");
+const fs = require("node:fs");
+const os = require("node:os");
 
 const retrieve = require("./lib/retrieve");
 const router = require("./lib/router");
