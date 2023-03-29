@@ -66,7 +66,7 @@
 	* [x] PM2 Integration
 	* [x] Rudimentary Dev Server
 	* [ ] ~Standalone Daemon with pid files?~
-* [ ] Request Queue to throttle unfulfilled requests
+* [x] Request Queue to throttle unfulfilled requests
 
 ### Later
 

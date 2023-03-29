@@ -12,6 +12,8 @@ const tasks = require("./lib/tasks");
 const load = require("./lib/load");
 const mime = require("./lib/mime");
 
+const quu = require("quu");
+
 const sharp = load("sharp"); // optional dep
 
 const tileblaster = module.exports = function tileblaster(config){
@@ -37,7 +39,7 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.maps = {};
 	self.prepareMaps();
 
-	// cleanup? TODO
+	self.queue = quu(self.config.queue);
 
 	// router
 	self.router = router({ mountpoint: self.config.server.mount });
@@ -102,28 +104,34 @@ const tileblaster = module.exports = function tileblaster(config){
 			}
 		};
 
-		// create tasks from map
-		tasks(self.maps[req.map]).run(args, function(err, { res }){
+		self.queue.push(function(next){ // queue tasks
 
-			// FIXME provide more context
-			if (err) debug.error(err);
+			// create tasks from map
+			tasks(self.maps[req.map]).run(args, function(err, { res }){
 
-			// end if response is already sent
-			if (!res.writable || res.destroyed || res.finished || res.closed || res.piped) return; // FIXME handle errors anyway
+				next(); // free queue
 
-			// send default error FIXME configure verbose errors
-			if (err) {
-				res.statusCode = 500;
-				res.setHeader("content-type", "text/plain");
-				res.end("Error.");
+				// FIXME provide more context
+				if (err) debug.error(err);
+
+				// end if response is already sent
+				if (!res.writable || res.destroyed || res.finished || res.closed || res.piped) return; // FIXME handle errors anyway
+
+				// send default error FIXME configure verbose errors
+				if (err) {
+					res.statusCode = 500;
+					res.setHeader("content-type", "text/plain");
+					res.end("Error.");
+					return;
+				};
+
+				// default response: no content
+				res.statusCode = 200; // FIXME 204
+				res.setHeader("content-length", "0");
+				res.end("");
 				return;
-			};
 
-			// default response: no content
-			res.statusCode = 200; // FIXME 204
-			res.setHeader("content-length", "0");
-			res.end("");
-			return;
+			});
 
 		});
 

@@ -27,7 +27,8 @@
     "klaw": "^4.1.0",
     "minimist": "^1.2.8",
     "node-watch": "^0.7.3",
-    "phin": "^3.7.0"
+    "phin": "^3.7.0",
+    "quu": "^0.4.3"
   },
   "optionalDependencies": {
     "js-mozjpeg": "^0.1.2",
