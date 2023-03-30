@@ -50,23 +50,24 @@
 		* [ ] ~Store in MBTiles or similar?~ → Not now
 	* [x] Delivery
 	* [x] Debug Dump
+	* [ ] Resize
 * [x] Cache Cleaning Worker
 * [ ] Documentation
 	* [ ] What is Tileblaster, what is the benefit for the user
 	* [ ] What can't tileblaster do
-	* [ ] How to use it, Standalone or behind Proxy
 	* [ ] Core concepts explained (maps, work queue, builtins and plugins)
 	* [ ] All config options
-	* [ ] All builtins
-	* [ ] Example setups
+	* [x] All builtins
 	* [ ] Example Config
-	* [ ] Example Nginx Config
+	* [x] Example Nginx Config
+	* [ ] How to use it, Standalone or behind Proxy
 * [x] CLI
 	* [x] Cluster Support
 	* [x] PM2 Integration
 	* [x] Rudimentary Dev Server
 	* [ ] ~Standalone Daemon with pid files?~
 * [x] Request Queue to throttle unfulfilled requests
+* [ ] Default Page
 
 ### Later
 
