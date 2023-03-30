@@ -64,8 +64,7 @@ const config = module.exports = {
 			builtin: "cache",
 			skipto: "deliver",
 		},{
-			builtin: "noop",
-			// FIXME: get from cache or memcache? need to figure out formats, need to figure out compression
+			builtin: "noop", // does nothing
 		},{
 			builtin: "tileserver",
 			url: "https://{s}.tileserver.example/test/{z}/{x}/{y}{r}.{e}",
@@ -83,10 +82,10 @@ const config = module.exports = {
 			headers: { // headers sent to versatiles server
 				"X-Tileblaster": "True",
 			},
-		},{
+		}/*,{
 			plugin: "resize",
 			size: [ 256, 256 ], // width, height
-		},{
+		}*/,{
 			plugin: "optimize",
 			png: { o: 4 }, // true or opts for optipng
 			jpeg: true, // true or opts for mozjpeg
@@ -107,11 +106,11 @@ const config = module.exports = {
 			gzip: true, // true or <level> or {opts}
 		},{
 			builtin: "cache",
-			duration: "30d",
-		},{
+			expires: "30d",
+		}/*,{
 			builtin: "memcache",
 			server: "",
-		},{
+		}*/,{
 			builtin: "deliver", // deliver best matching tile for client
 			headers: {}, // additional http headers
 		}],
