@@ -11,7 +11,7 @@ and can optimise tiles on the fly and speed up delivery by acting as a cache.
 
 ## What tileblaster isn't
 
-tileblaster is not a tileserver, it does not read raw OpenStreetMap data or create map tiles from scratch. You need to
+tileblaster is not a tileserver, it does not read raw OpenStreetMap data or create map tiles from scratch; you need to
 have a source for map tiles. You can of course use tools like [tilemaker](https://tilemaker.org/) to create your own
 tilesets, use freely available ready-made tiles from [Versatiles](https://versatiles.org/) or use another tileserver
 if you're allowed to do so.
@@ -62,7 +62,7 @@ your client requires the use of a non-standard request uri or uses GET/POST data
 Limits request dependent on parameters. You can deny access to tiles to certain zoom levels,
 within a bounding box, to specific extensions and densities, or use your own check function.
 
-```
+``` js
 {
 	builtin: "check",
 	zoom: [ 0, 22 ], // min, max
