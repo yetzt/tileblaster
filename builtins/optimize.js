@@ -5,7 +5,7 @@ if (worker.isMainThread) {
 
 	const cache = {};
 
-	// bare bones example builtin
+	// optimize
 	module.exports = function modernize({ opts, data }, next){
 		const debug = this.lib.debug;
 		const load = this.lib.load;

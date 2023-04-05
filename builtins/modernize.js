@@ -1,4 +1,4 @@
-// bare bones example builtin
+// modernize
 module.exports = function modernize({ opts, data }, next){
 	const sharp = this.lib.sharp;
 	const debug = this.lib.debug;
