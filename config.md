@@ -226,6 +226,19 @@ Fetch a tile from a local or remote [versatiles](https://versatiles.org) contain
 }
 ```
 
+#### `pmtiles`
+
+Fetch a tile from a pmtiles container.
+
+``` js
+{
+	// get tile from versatiles container
+	builtin: "pmtiles",
+	url: "https://cdn.example/planet.pmtiles",
+	// url: "/path/to/planet.pmtiles",
+}
+```
+
 #### `resize`
 
 **Not yet implemented** FIXME

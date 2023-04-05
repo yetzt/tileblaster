@@ -78,10 +78,13 @@ const config = module.exports = {
 			// get tile from versatiles container
 			builtin: "versatiles",
 			url: "https://cdn.example/planet.versatiles",
-			tms: false, // y coordinate is inverted
 			headers: { // headers sent to versatiles server
 				"X-Tileblaster": "True",
 			},
+		},{
+			// get tiles from pmtiles container
+			builtin: "pmtiles",
+			url: "https://cdn.example/planet.pmtiles"
 		}/*,{
 			plugin: "resize",
 			size: [ 256, 256 ], // width, height

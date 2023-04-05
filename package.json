@@ -33,6 +33,7 @@
   "optionalDependencies": {
     "js-mozjpeg": "^0.1.2",
     "optipng-js": "^0.1.2",
+    "pmtiles": "^2.7.1",
     "sharp": "^0.32.0",
     "versatiles": "^0.3.1"
   },
