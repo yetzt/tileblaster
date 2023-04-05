@@ -12,17 +12,7 @@
 * [x] Debug Library → `lib/debug.js`
 * [x] Optional Module Loader → `lib/load.js`
 * [x] HTTPs Abstraction (~got or~ phin) → `lib/retrieve.js`
-* [x] Plugin Interface
-* [x] Plugin/Task Runner
-* [ ] Plugins
-	* [ ] Nginx Cache Hydration
-	* [ ] Vectortiles Editor → https://www.npmjs.com/package/vtt
-	* [ ] Resize and Convert Raster Tiles → https://www.npmjs.com/package/sharp
-	* [ ] Memcache → https://www.npmjs.com/package/iomem
-	* [ ] Convert Geojson ↔ Topojson
-	* [ ] Redirects
-	* [ ] GDAL?
-	* [ ] Render Tiles with MapLibreGL-Native
+* [x] Plugin Interface / Task Runner
 * [-] Builtins
 	* [x] CORS
 	* [x] Parse Request
@@ -31,11 +21,8 @@
 		* [x] ZXY Webtiles → `builtin/tileserver.js`
 		* [x] TMS Webtiles → `builtin/tileserver.js`
 		* [x] Versatiles
-		* [ ] PMTiles?
-		* [ ] MBTiles?
-		* [ ] WMS?
-		* [ ] From tile.json → Expand jobs with .push()?
-	* [x] Compression → `builtin/compress.js`
+		* [x] PMTiles
+		* [x] MBTiles
 	* [x] Optimization (optipng, mozjpeg, svgo?, pbfcrop?)
 	* [x] Modernize Raster Formats (png,jpeg → webp,avif)
 	* [x] Caching to Disk
@@ -49,18 +36,30 @@
 		* [x] ~Cache-Control Headers~ → Set via `deliver` builtin
 		* [ ] ~Store in MBTiles or similar?~ → Not now
 	* [x] Delivery
+	* [ ] Redirects
 	* [x] Debug Dump
-	* [ ] Resize
+	* [x] Vectortile Editing
+	* [-] Full image manipulation for raster tiles → https://www.npmjs.com/package/sharp
+	* [x] Vectortiles Editor → https://www.npmjs.com/package/vtt
+	* [ ] Convert Geojson ↔ Topojson
 * [x] Cache Cleaning Worker
-* [ ] Documentation
-	* [ ] What is Tileblaster, what is the benefit for the user
-	* [ ] What can't tileblaster do
-	* [ ] Core concepts explained (maps, work queue, builtins and plugins)
-	* [ ] All config options
+* [-] Documentation
+	* [x] What is Tileblaster, what is the benefit for the user
+	* [x] What can't tileblaster do
+	* [x] All config options
 	* [x] All builtins
-	* [ ] Example Config
+	* [x] Example Config
 	* [x] Example Nginx Config
-	* [ ] How to use it, Standalone or behind Proxy
+	* [x] How to use it, Standalone or behind Proxy
+	* [ ] Core concepts explained (maps, work queue, builtins and plugins)
+	* [ ] "Recipes"
+		* [ ] Caching proxy for a tileserver
+		* [ ] Serve tiles from container
+		* [ ] Raster editing: "Dark mode"
+		* [ ] Vector editing: remove unused layers
+		* [ ] Rassterize vector tiles with maplibre-gl-native?
+	* How to contribute, security
+
 * [x] CLI
 	* [x] Cluster Support
 	* [x] PM2 Integration
@@ -77,6 +76,10 @@
 * [ ] Support for Glyphs and Styles, tile.json proxy
 * [x] Custom String Template function for {x} replacement instead of regex
 * [ ] Error wrapper (to pass along http status etc)?
+	* [ ] Nginx Cache Hydration
+* [ ] Memcache → https://www.npmjs.com/package/iomem
+* [ ] GDAL?
+* [ ] Render Tiles with MapLibreGL-Native
 * [ ] Footprint
 	* [ ] Replace Phin?
 
