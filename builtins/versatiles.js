@@ -55,8 +55,6 @@ module.exports = function({ req, res, opts, data }, next){
 				expires: true, // default policy
 			};
 
-			console.log(tile);
-
 			// add to tile stack, set primary tile
 			data.tiles.unshift(tile);
 			data.tile = tile;
