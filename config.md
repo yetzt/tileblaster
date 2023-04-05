@@ -1,5 +1,13 @@
 # tileblaster configuration
 
+tileblaster configuration lives in a javascript (common js) file, that exports an object containing the configuration.
+
+## Example
+
+See [config.dist.js](./config.dist.js)
+
+## Properties
+
 #### `version`
 
 config file format version. Always `1` fro now.
