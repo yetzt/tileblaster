@@ -47,5 +47,8 @@
   "os": [
     "darwin",
     "linux"
+  ],
+  "keywords": [
+    "tileblaster", "tileserver", "map", "tiles", "tile", "mbtiles", "versatiles", "pmtiles", "server", "proxy", "cache", "vectortiles", "rastertiles", "mvt", "pbf"
   ]
 }
