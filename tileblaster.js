@@ -3,6 +3,7 @@ const path = require("node:path");
 const fs = require("node:fs");
 const os = require("node:os");
 
+const decompress = require("./lib/decompress");
 const retrieve = require("./lib/retrieve");
 const router = require("./lib/router");
 const strtpl = require("./lib/strtpl");
@@ -25,7 +26,7 @@ const tileblaster = module.exports = function tileblaster(config){
 	self.configure(config);
 
 	// libraries (expose to plugins)
-	self.lib = { retrieve, debug, load, tasks, mime, store, strtpl, sharp };
+	self.lib = { retrieve, debug, load, tasks, mime, store, strtpl, decompress, sharp };
 
 	// plugins
 	self.plugins = {};
