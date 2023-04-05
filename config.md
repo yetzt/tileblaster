@@ -238,6 +238,17 @@ Fetch a tile from a pmtiles container.
 	// url: "/path/to/planet.pmtiles",
 }
 ```
+#### `mbtiles`
+
+Retrieve a tile from a mbtiles database.
+
+``` js
+{
+	// get tile from versatiles container
+	builtin: "mbtiles",
+	file: "/path/to/planet.mbtiles",
+}
+```
 
 #### `resize`
 

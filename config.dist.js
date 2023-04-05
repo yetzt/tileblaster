@@ -85,6 +85,10 @@ const config = module.exports = {
 			// get tiles from pmtiles container
 			builtin: "pmtiles",
 			url: "https://cdn.example/planet.pmtiles"
+		},{
+			// get tiles from local mbtiles database
+			builtin: "mbtiles",
+			file: "/path/to/planet.mbtiles"
 		}/*,{
 			plugin: "resize",
 			size: [ 256, 256 ], // width, height
