@@ -89,6 +89,18 @@ const config = module.exports = {
 			// get tiles from local mbtiles database
 			builtin: "mbtiles",
 			file: "/path/to/planet.mbtiles"
+		},{
+			// edit vectortile
+			builtin: "edit",
+			edit: function(layers){
+
+				// remove unused layer
+				layers = layers.filter(function(layer){
+					return (layer.name !== "unused-layer");
+				});
+
+				return layers;
+			}
 		}/*,{
 			plugin: "resize",
 			size: [ 256, 256 ], // width, height

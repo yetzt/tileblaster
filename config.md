@@ -250,6 +250,25 @@ Retrieve a tile from a mbtiles database.
 }
 ```
 
+#### `edit`
+
+Edit vectortiles
+
+``` js
+{
+	builtin: "edit",
+	edit: function(layers){
+
+		// remove unused layer
+		layers = layers.filter(function(layer){
+			return (layer.name !== "unused-layer");
+		});
+
+		return layers;
+	},
+}
+```
+
 #### `resize`
 
 **Not yet implemented** FIXME

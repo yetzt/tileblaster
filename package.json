@@ -31,14 +31,15 @@
     "quu": "^0.4.3"
   },
   "optionalDependencies": {
+    "fzstd": "^0.1.0",
     "js-mozjpeg": "^0.1.2",
-    "optipng-js": "^0.1.2",
-    "sharp": "^0.32.0",
-    "pmtiles": "^2.7.1",
-    "versatiles": "^0.3.1",
     "mbg": "^0.0.2",
     "node-liblzma": "^1.1.9",
-    "fzstd": "^0.1.0"
+    "optipng-js": "^0.1.2",
+    "pmtiles": "^2.7.1",
+    "sharp": "^0.32.0",
+    "versatiles": "^0.3.1",
+    "vtt": "^0.0.3"
   },
   "engines": {
     "node": ">=14"
