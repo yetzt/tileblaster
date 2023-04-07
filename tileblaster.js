@@ -166,8 +166,7 @@ const tileblaster = module.exports = function tileblaster(config){
 // graceful shutdown
 tileblaster.prototype.shutdown = function(){
 	const self = this;
-	if (self.shutdown === true) return; // ensure shutdowen only runs once
-	self.shutdown = true;
+	self.shutdown = function(){}; // ensure shutdown only runs once
 	debug.info("shutting down");
 	let closed = 0;
 	self.servers.forEach(function(server){
