@@ -13,12 +13,6 @@ module.exports = function({ req, res, opts, data }, next){
 	const run = function(){
 		const pm = cache[data.map];
 
-		/*
-		const pmTilesFile = new pmtiles.PMTiles(URL_TO_PM_TILES);
-		const tileResponse = await pmTilesFile.getZxy(z, x, y);
-		const tileData = Buffer.from(tileResponse.data).toString('base64');
-		*/
-
 		debug.info("Fetching %s/%s/%s", data.req.params.z, data.req.params.x, data.req.params.y);
 		pm.tiles.getZxy(data.req.params.z, data.req.params.x, data.req.params.y).then(function(result){
 
