@@ -40,7 +40,10 @@ module.exports = function modernize({ opts, data }, next){
 				data.tiles.unshift(tile);
 
 				// set primary if client supports
-				if (data.req.supports[method] && buffer.length < data.tile.buffer.length) data.tile = tile;
+				if (data.req.supports[method] && buffer.length < data.tile.buffer.length) {
+					debug.info("Modernized '%s': -%db", tile.path.magenta, data.tile.buffer.length-buffer.length);
+					data.tile = tile;
+				};
 
 				resolve();
 
