@@ -23,6 +23,9 @@ module.exports = function({ req, res, opts, data }, next){
 		decompress(buf, info.compression, function(err, buf){
 			if (err) return next(err);
 
+			// handle non-existant tiles
+			if (buf === null) return next(new Error("MBTiles: tile does not exist"));
+
 			const tile = {
 				buffer: buf,
 				type: mime.filetype(info.mimetype),
