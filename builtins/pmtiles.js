@@ -1,12 +1,16 @@
 const load = require("../lib/load");
 const pmtiles = load("pmtiles");
 
+// map pmtiles compression id to method
+const pmcompression = [ null, null, "gz", "br", "zstd" ];
+
 const cache = {};
 
 // pmtiles backend
 module.exports = function({ req, res, opts, data }, next){
 	const mime = this.lib.mime;
 	const debug = this.lib.debug;
+	const decompress = this.lib.decompress;
 
 	if (!pmtiles) return next(new Error("Dependency 'pmtiles' is missing."));
 
@@ -16,8 +20,9 @@ module.exports = function({ req, res, opts, data }, next){
 		debug.info("Fetching %s/%s/%s", data.req.params.z, data.req.params.x, data.req.params.y);
 		pm.tiles.getZxy(data.req.params.z, data.req.params.x, data.req.params.y).then(function(result){
 
-			// decompress FIXME pmtiles spec allows gzip, brotli and zstd, decompress function only supports gzip. use own implementation?
-			pm.tiles.decompress(Buffer.from(result.data), pm.header.tileCompression).then(function(buf){
+			// pm.tiles.decompress(Buffer.from(result.data), pm.header.tileCompression).then(function(buf){
+			// pmtiles spec allows gzip, brotli and zstd, decompress function only supports gzip. use own implementation?
+			decompress(Buffer.from(result.data), pmcompression[pm.header.tileCompression]).then(function(buf){
 
 				const tile = {
 					buffer: buf,
