@@ -74,8 +74,10 @@
 * [ ] Config Web Interface
 * [ ] Support for Glyphs and Styles, tile.json proxy
 * [x] Custom String Template function for {x} replacement instead of regex
-* [ ] Error wrapper (to pass along http status etc)?
-	* [ ] Nginx Cache Hydration
+* [ ] Better Error Handline
+	* [ ] Error wrapper (to pass along http status etc)?
+	* [ ] 404 for nonexistant tiles
+* [ ] Nginx Cache Hydration
 * [ ] Memcache → https://www.npmjs.com/package/iomem
 * [ ] GDAL?
 * [ ] Render Tiles with MapLibreGL-Native
