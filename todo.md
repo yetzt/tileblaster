@@ -58,8 +58,7 @@
 		* [ ] Raster editing: "Dark mode"
 		* [ ] Vector editing: remove unused layers
 		* [ ] Rassterize vector tiles with maplibre-gl-native?
-	* How to contribute, security
-
+	* How to contribute, bug reports
 * [x] CLI
 	* [x] Cluster Support
 	* [x] PM2 Integration

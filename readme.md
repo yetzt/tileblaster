@@ -12,6 +12,7 @@ and can optimise tiles on the fly and speed up delivery by acting as a cache.
 * Optimize raster tiles with `mozjpeg` / `optipng` or convert them to `webp` / `aviv` format on the fly.
 * Precompress tiles with `gzip` and `brotli`
 * Cache remote files locally and
+
 and much more
 
 ## What tileblaster isn't
