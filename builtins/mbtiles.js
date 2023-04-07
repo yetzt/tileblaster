@@ -1,9 +1,9 @@
 const load = require("../lib/load");
-const versatiles = load("mbg");
+const mbg = load("mbg");
 
 const cache = {};
 
-// versatiles backend
+// mbtiles backend
 module.exports = function({ req, res, opts, data }, next){
 	const mime = this.lib.mime;
 	const debug = this.lib.debug;

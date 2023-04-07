@@ -1,5 +1,5 @@
 const load = require("../lib/load");
-const versatiles = load("vtt");
+const vtt = load("vtt");
 
 const cache = {};
 
@@ -7,7 +7,7 @@ const cache = {};
 module.exports = function({ req, res, opts, data }, next){
 	const debug = this.lib.debug;
 
-	if (!vtt) return next(new Error("Dependency 'mbg' is missing."));
+	if (!vtt) return next(new Error("Dependency 'vtt' is missing."));
 
 	if (!opts.edit || typeof opts.edit !== "function") {
 		debug.warn("No edit function specified, skipping");

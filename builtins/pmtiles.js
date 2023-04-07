@@ -3,7 +3,7 @@ const pmtiles = load("pmtiles");
 
 const cache = {};
 
-// versatiles backend
+// pmtiles backend
 module.exports = function({ req, res, opts, data }, next){
 	const mime = this.lib.mime;
 	const debug = this.lib.debug;
