@@ -39,7 +39,7 @@
 	* [ ] Redirects
 	* [x] Debug Dump
 	* [x] Vectortile Editing
-	* [-] Full image manipulation for raster tiles → https://www.npmjs.com/package/sharp
+	* [x] Full image manipulation for raster tiles → https://www.npmjs.com/package/sharp
 	* [x] Vectortiles Editor → https://www.npmjs.com/package/vtt
 	* [ ] Convert Geojson ↔ Topojson
 * [x] Cache Cleaning Worker
