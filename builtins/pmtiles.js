@@ -20,6 +20,9 @@ module.exports = function({ req, res, opts, data }, next){
 		debug.info("Fetching %s/%s/%s", data.req.params.z, data.req.params.x, data.req.params.y);
 		pm.tiles.getZxy(data.req.params.z, data.req.params.x, data.req.params.y).then(function(result){
 
+			// undefined result means tile does not exists
+			if (!result) return next(new Error("PMTiles: tile does not exist"));
+
 			// pm.tiles.decompress(Buffer.from(result.data), pm.header.tileCompression).then(function(buf){
 			// pmtiles spec allows gzip, brotli and zstd, decompress function only supports gzip. use own implementation?
 			decompress(Buffer.from(result.data), pmcompression[pm.header.tileCompression]).then(function(buf){
