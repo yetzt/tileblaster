@@ -83,4 +83,4 @@ If you don't need them, install tileblaster with `npm i -g tileblaster --no-opti
 
 ## License
 
-[Unlicense](./LICENSE)
+[Unlicense](./UNLICENSE.md)
