@@ -60,7 +60,7 @@
 	* [x] PM2 Integration
 	* [x] Rudimentary Dev Server
 * [x] Request Queue to throttle unfulfilled requests
-* [ ] Default Page
+* [x] Fancy Default Page
 
 ### Later
 
