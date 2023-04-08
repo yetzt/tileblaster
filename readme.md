@@ -42,7 +42,7 @@ if you're allowed to do so.
 
 ## Configuration
 
-See [config.md](./config.md)
+See [Configuration](docs/config.md) and [Examples](docs/examples.md)
 
 ### Plugins
 

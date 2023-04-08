@@ -13,7 +13,7 @@
 * [x] Optional Module Loader → `lib/load.js`
 * [x] HTTPs Abstraction (~got or~ phin) → `lib/retrieve.js`
 * [x] Plugin Interface / Task Runner
-* [-] Builtins
+* [x] Builtins
 	* [x] CORS
 	* [x] Parse Request
 	* [x] Check Request
@@ -34,16 +34,13 @@
 		* [x] Expires Headers
 		* [x] Don't update if already cached (in case of store-only)
 		* [x] ~Cache-Control Headers~ → Set via `deliver` builtin
-		* [ ] ~Store in MBTiles or similar?~ → Not now
 	* [x] Delivery
-	* [ ] Redirects
 	* [x] Debug Dump
 	* [x] Vectortile Editing
 	* [x] Full image manipulation for raster tiles → https://www.npmjs.com/package/sharp
 	* [x] Vectortiles Editor → https://www.npmjs.com/package/vtt
-	* [ ] Convert Geojson ↔ Topojson
 * [x] Cache Cleaning Worker
-* [-] Documentation
+* [x] Documentation
 	* [x] What is Tileblaster, what is the benefit for the user
 	* [x] What can't tileblaster do
 	* [x] All config options
@@ -51,19 +48,17 @@
 	* [x] Example Config
 	* [x] Example Nginx Config
 	* [x] How to use it, Standalone or behind Proxy
-	* [ ] Core concepts explained (maps, work queue, builtins and plugins)
-	* [ ] "Recipes"
-		* [ ] Caching proxy for a tileserver
-		* [ ] Serve tiles from container
-		* [ ] Raster editing: "Dark mode"
-		* [ ] Vector editing: remove unused layers
-		* [ ] Rassterize vector tiles with maplibre-gl-native?
+	* [x] Core concepts explained (maps, work queue, builtins and plugins)
+	* [x] Examples
+		* [x] Caching proxy for a tileserver
+		* [x] Serve tiles from container
+		* [x] Raster editing: "Dark mode"
+		* [x] Vector editing: remove unused layers
 	* How to contribute, bug reports
 * [x] CLI
 	* [x] Cluster Support
 	* [x] PM2 Integration
 	* [x] Rudimentary Dev Server
-	* [ ] ~Standalone Daemon with pid files?~
 * [x] Request Queue to throttle unfulfilled requests
 * [ ] Default Page
 
@@ -83,6 +78,11 @@
 * [ ] Render Tiles with MapLibreGL-Native
 * [ ] Footprint
 	* [ ] Replace Phin?
+* [ ] Rassterize vector tiles with maplibre-gl-native?
+* [ ] Cache: Store in MBTiles or similar?
+* [ ] Standalone Daemon with pid files?
+* [ ] Redirects
+* [ ] Convert Geojson ↔ Topojson
 
 ## Notes
 
