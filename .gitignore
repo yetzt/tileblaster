@@ -1,6 +1,6 @@
 config.js
 node_modules
-data
-*.sock
 *.socket
-tiles
+attic
+.nova
+package-lock.json

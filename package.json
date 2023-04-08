@@ -1,10 +1,13 @@
 {
   "name": "tileblaster",
-  "version": "0.4.9",
-  "description": "pretty fast optimizing & compressing tile caching proxy",
-  "main": "lib/tileblaster.js",
+  "version": "1.0.0",
+  "description": "a quick and versatile map tile caching proxy",
+  "main": "tileblaster.js",
   "bin": {
     "tileblaster": "bin/tileblaster.js"
+  },
+  "scripts": {
+    "dev": "DEBUG=tileblaster node bin/tileblaster-dev.js"
   },
   "repository": {
     "type": "git",
@@ -17,25 +20,34 @@
   },
   "homepage": "https://github.com/yetzt/tileblaster#readme",
   "dependencies": {
-    "dur": "^0.0.3",
-    "klaw": "^3.0.0",
+    "colrz": "^0.0.5",
+    "dur": "^1.0.1",
+    "fs-xattr": "^0.3.1",
+    "klaw": "^4.1.0",
     "minimist": "^1.2.8",
     "node-watch": "^0.7.3",
     "phin": "^3.7.0",
     "quu": "^0.4.3"
   },
   "optionalDependencies": {
-    "debug": "^4.3.4",
-    "jpck": "^1.0.2",
-    "node-zopfli": "^2.1.4",
-    "nsa": "^0.2",
-    "pnck": "^1.0.1",
-    "versatiles": "^0.3.0"
+    "fzstd": "^0.1.0",
+    "js-mozjpeg": "^0.1.2",
+    "mbg": "^0.0.2",
+    "node-liblzma": "^1.1.9",
+    "optipng-js": "^0.1.2",
+    "pmtiles": "^2.7.1",
+    "sharp": "^0.32.0",
+    "versatiles": "^0.3.1",
+    "vtt": "^0.0.3"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">=14"
   },
   "os": [
-    "!win32"
+    "darwin",
+    "linux"
+  ],
+  "keywords": [
+    "tileblaster", "tileserver", "map", "tiles", "tile", "mbtiles", "versatiles", "pmtiles", "server", "proxy", "cache", "vectortiles", "rastertiles", "mvt", "pbf"
   ]
 }

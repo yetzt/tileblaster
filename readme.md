@@ -1,58 +1,86 @@
 # tileblaster
 
-tileblaster is a map tile caching (and optimizing) proxy, designed to run with nginx.
+![tileblaster](docs/tileblaster.png)
 
-## install
+tileblaster is a versatile caching proxy server for map tiles. it can handle many different tile sources and file formats
+and can optimise tiles on the fly and speed up delivery by acting as a cache.
 
-`npm i tileblaster -g`
+## Awesome things you can do with tileblaster
 
-use `--no-optional` if you don't want tile optimization or [versatiles](https://github.com/versatiles-org/versatiles-spec) support.
+* Serve tiles from any ZXY/TMS tileserver, [VersaTiles container](https://versatiles.org/), pmtiles container or mbtiles database.
+* Edit vector tiles on the fly with [Vector Tile Transformer](https://www.npmjs.com/package/vtt)
+* Optimize raster tiles with `mozjpeg` / `optipng` or convert them to `webp` / `aviv` format on the fly.
+* Precompress tiles with `gzip` and `brotli`
+* Cache remote files locally and
 
-## run
+and much more
 
-`tileblaster /path/to/config.js`
+## What tileblaster isn't
 
-Use [pm2](https://npmjs.com/package/pm2), [nodemon](https://npmjs.com/package/nodemon), [forever](https://npmjs.com/package/forever) or similar to run tileblaster as service;
+tileblaster is not a tileserver, it does not read raw OpenStreetMap data or create map tiles from scratch; you need to
+have a source for map tiles. You can of course use tools like [tilemaker](https://tilemaker.org/) to create your own
+tilesets, use freely available ready-made tiles from [Versatiles](https://versatiles.org/) or use another tileserver
+if you're allowed to do so.
 
-## configuration
+## Install
 
-see [config.js.dist](config.js.dist)
+`npm i -g tileblaster`
 
-### nginx configuration
+## Usage
+
+`tileblaster [options] [-c] config.js`
+
+### Options
+
+* `-c` `--config <config.js>` - load config file
+* `-p` `--port <[host:]port>` - listen on this port (overrides config)
+* `-s` `--socket <socket[,mode,gid]>` -  on this socket (overrides config)
+* `-t` `--threads <num>` - number of threads (overrides config)
+* `-h` `--help` - print help screen
+* `-v` `--verbose` - enable debug output
+* `-q` `--quiet` - disable debug output
+
+## Configuration
+
+See [Configuration](docs/config.md) and [Examples](docs/examples.md)
+
+### Plugins
+
+tileblaster supports plugins. They work just like builtins, but you can load them from the directory specified in `config.paths.plugins`
+
+[Example Plugin](plugins/example.js)
+
+### Nginx
+
+tileblaster is easy to use with nginx acting as a reverse proxy. Here is a simple example:
 
 ```
-upstream upstream_tileblaster {
-	server unix:/path/to/tileblaster.sock;
+upstream tileblaster {
+	server 127.0.0.1:28897;
+	# server unix:/path/to/tileblaster.socket; # ← if you use sockets
 }
 
 server {
-	listen 80;
-	server_name tileblaster;
 
-	gzip_static on;
-	# brotli_static on; # if ngx_brotli is available
+	# ...
 
-	if (-f $document_root/$uri.err) {
-		return 204;
+	location /tileblaster { # ← set config.server.mount to the same path
+		proxy_set_header Host $host;
+		proxy_set_header Accept-Encoding $http_accept_encoding;
+		proxy_http_version 1.1;
+		proxy_pass http://tileblaster;
 	}
 
-	location / {
-		root /path/to/tileblaster/tiles;
-		try_files $uri $uri/ @tileblaster;
-	}
-
-	location @tileblaster {
-		proxy_pass http://upstream_tileblaster;
-	}
 }
+
 ```
 
-## usage
+## Optional Dependencies
 
-get the tiles via `http://server/<mapid>/<z>/<x>/<y>[<d>].<ext>`
+tileblaster has a few optional dependencies, that are mostly used for image manilulation and optimisation (Sharp, MozJPEG, OptiPNG)  or more complex tile sources (Versatiles, PMTiles, MBTiles).
 
-* `<mapid>` is the map id specified in your `config.js`
-* `<z>`, `<x>` and `<z>` are the tile coorinates
-* `<d>` is the optional pixel density marker, for example `@2x`
-* `<ext>` is the extension, for example `png`, `geojson` or `pbf`
+If you don't need them, install tileblaster with `npm i -g tileblaster --no-optional`
 
+## License
+
+[Unlicense](./UNLICENSE.md)

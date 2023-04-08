@@ -1,29 +1,81 @@
 #!/usr/bin/env node
-var argv = require('minimist')(process.argv.slice(2));
-var watch = require('node-watch');
-var configfile = require("path").resolve.apply(global, (!!argv._[0]) ? [ process.cwd(), argv._[0] ] : [ "../config.js" ]);
-var tb = require("../lib/tileblaster.js")(
-	(function(config){
-		["socket","tiles","queue","id","port"].forEach(function(n){
-			if (!!argv[n]) config[n] = argv[n];
-		});
-		// watch changes in config file
-		watch(configfile, function(evt,f){
-			if (evt === "update") try {
-				delete require.cache[require.resolve(configfile)];
-				tb.reconfigure(require(configfile));
-			} catch (err) {
-				console.error("Unable to read changed config file", err);
-			}
-		});
-		return config;
-	})((function(){
-		try {
-			return require(configfile);
-		} catch (err) {
-			console.error("usage: tileblaster <config.js> [--socket tileblaster.sock] [--tiles /path/to/tiles] [--queue 100] [--id mytileblaster]");
-			process.exit(1);
-		}
-	})())
-).server().listen();
 
+// run only if called directly
+if (require.main === module) {
+
+	const cluster = require("node:cluster");
+	const config = require("../lib/config");
+	const debug = require("../lib/debug");
+
+	if (cluster.isPrimary) { // main
+
+		// fork, watch config, reload, shutdown, etc
+
+		// shutdown state
+		let shuttingdown = false;
+
+		// pool management
+		let pool = [];
+
+		// recursive fork helper
+		function fork(n){
+			worker = cluster.fork({ ...process.env, workerid: n });
+			debug.info("Started Worker #%d".bold.white, n);
+			worker.on('disconnect', function(){
+				debug.warn("Disconnect from Worker #%d".bold.white, n);
+				if (shuttingdown) { // remove worker from pool
+					pool[n] = null;
+					if (pool.filter(w=>!!w).length === 0) { // no more workers left, shutdowm
+						debug.info("All Workers terminated. Exiting.".bold.white);
+						process.exit(0);
+					}
+				} else { // fork new worker
+					pool[n] = fork(n);
+				}
+			});
+			return worker;
+		};
+
+		// initial fork for all worker threads
+		pool = Array(config.threads).fill().map(function(_,n){
+			return fork(n);
+		});
+
+		const shutdown = function shutdown(){
+			shuttingdown = true;
+			debug.info("Shutdown initiated".white.bold);
+			pool.forEach(function(worker,n){
+				debug.info("Sending shutdown message to Worker #%d".white.bold, n);
+				worker.send("shutdown");
+			});
+			setTimeout(function(){
+				debug.warn("Exiting Non-Graceful".white.bold);
+				process.exit(1);
+			},2900);
+		};
+
+		process.on("SIGINT", shutdown);
+		process.on("SIGTERM", shutdown);
+
+		// watch config file for changes, reload workers on change
+		const watch = require("node-watch");
+		watch(config._file, {}).on("change", function(evt){
+			debug.info("Config file change detected, restarting Workers".white.bold);
+			pool.forEach(function(worker,n){
+				worker.send("shutdown");
+			});
+		});
+
+		// create purge worker
+		const purge = require("../lib/purge");
+		setInterval(purge, 3600000).unref(); // regularly every  1h; FIXME: make configurable
+		setTimeout(purge, 300000).unref(); // run once after 5 minutes of uptime
+
+	} else { // worker
+
+		const tileblaster = require("../tileblaster");
+		const instance = tileblaster({ ...config, id: process.env.workerid });
+
+	}
+
+};
