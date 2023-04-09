@@ -31,7 +31,7 @@ const config = module.exports = {
 
 	// plugins, relative or absolute paths for local files, npm module names otherwise
 	plugins: {
-		resize: "./resize.js", // relative path, starting with ./
+		resize: "./resize.js", // path relative to `config.paths.plugins`, starting with ./
 		convert: "/path/to/convert.js", // absolute path
 		optimize: "someplugin", // npm module
 	},

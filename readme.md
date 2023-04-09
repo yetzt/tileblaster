@@ -46,7 +46,7 @@ See [Configuration](docs/config.md) and [Examples](docs/examples.md)
 
 ### Plugins
 
-tileblaster supports plugins. They work just like builtins, but you can load them from the directory specified in `config.paths.plugins`
+tileblaster supports plugins. They work just like builtins, but you can specify them in `config.plugins`
 
 [Example Plugin](plugins/example.js)
 
