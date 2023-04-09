@@ -43,12 +43,21 @@ const config = module.exports = {
 			builtin: "cors",
 			origins: [ "https://example.org/" ],
 		},{
-			builtin: "parse", // /z/x/y@r.ext, other formats need plugins; set params and dest
+			builtin: "parse", // /z/x/y@r.ext, other formats via parse function
 			parse: function(req, next){ // override parse function, req is the raw request
+
+				// req.url=/foo/bar/{z}.{x}.{y}
+				let p = req.url.split("/").pop().split(".");
+
 				// do things to get parameters from path
 				next(null, {
-					params: { param: "1" }, // deliver parameters
-					dest: "/path/to/tile/{param}/{param}/blub.{e}{c}", // template for destination
+					z: p[0],
+					x: p[1],
+					y: p[2],
+					r: "",
+					w: 256,
+					d: 1,
+					e: ".png"
 				});
 			},
 		},{
@@ -74,7 +83,9 @@ const config = module.exports = {
 			status: [ 200 ], // expected status code(s)
 			mimetypes: [ "image/png", "image/jpeg" ], // expected mime types
 			mimetype: "image/png", // overwrite mime type from server
-		},{
+		},
+		/* alternative:
+		{
 			// get tile from versatiles container
 			builtin: "versatiles",
 			url: "https://cdn.example/planet.versatiles",
@@ -89,7 +100,9 @@ const config = module.exports = {
 			// get tiles from local mbtiles database
 			builtin: "mbtiles",
 			file: "/path/to/planet.mbtiles"
-		},{
+		},
+		*/
+		{
 			// edit vectortile
 			builtin: "edit",
 			edit: function(layers){
@@ -101,10 +114,11 @@ const config = module.exports = {
 
 				return layers;
 			}
-		}/*,{
-			plugin: "resize",
-			size: [ 256, 256 ], // width, height
-		}*/,{
+		},{
+			// use sharp for image manipulation
+			plugin: "sharp",
+			resize: { width: 512, height: 512 }, // sharp.resize()
+		},{
 			plugin: "optimize",
 			png: { o: 4 }, // true or opts for optipng
 			jpeg: true, // true or opts for mozjpeg
@@ -126,10 +140,10 @@ const config = module.exports = {
 		},{
 			builtin: "cache",
 			expires: "30d",
-		}/*,{
-			builtin: "memcache",
-			server: "",
-		}*/,{
+		},{
+			// debug output
+			builtin: "dump",
+		},{
 			builtin: "deliver", // deliver best matching tile for client
 			headers: {}, // additional http headers
 		}],
