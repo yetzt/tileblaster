@@ -9,9 +9,9 @@ and can optimise tiles on the fly and speed up delivery by acting as a cache.
 
 * Serve tiles from any ZXY/TMS tileserver, [VersaTiles container](https://versatiles.org/), pmtiles container or mbtiles database.
 * Edit vector tiles on the fly with [Vector Tile Transformer](https://www.npmjs.com/package/vtt)
-* Optimize raster tiles with `mozjpeg` / `optipng` or convert them to `webp` / `aviv` format on the fly.
+* Optimize raster tiles with `mozjpeg` / `optipng`, convert them to `webp` / `aviv` format on the fly or edit them with [sharp](https://www.npmjs.com/package/sharp).
 * Precompress tiles with `gzip` and `brotli`
-* Cache remote files locally and
+* Cache remote files locally
 
 and much more
 
