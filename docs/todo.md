@@ -61,55 +61,58 @@
 	* [x] Rudimentary Dev Server
 * [x] Request Queue to throttle unfulfilled requests
 * [x] Fancy Default Page
-
-### Later
-
-* [ ] Monitoring
-* [ ] Map Web Interface
-* [ ] Config Web Interface
-* [ ] Support for Glyphs and Styles, tile.json proxy
 * [x] Custom String Template function for {x} replacement instead of regex
+
+### Next
+
+* [ ] Redirects
+* [ ] Convert Geojson ↔ Topojson
+* [ ] Map Web Interface, Configurable
+* [ ] Configurable Index Page
+* [ ] Support for Glyphs and Styles, tile.json proxy
 * [ ] Better Error Handline
 	* [ ] Error wrapper (to pass along http status etc)?
 	* [ ] 404 for nonexistant tiles
-* [ ] Nginx Cache Hydration
-* [ ] Memcache → https://www.npmjs.com/package/iomem
-* [ ] GDAL?
 * [ ] Render Tiles with MapLibreGL-Native
+* [ ] Improve Debug Consistency
+
+### Later
+
+* [ ] Monitoring / Status / Statistics Interface
+* [ ] Integration with Nginx-Cache
+* [ ] Memcache → https://www.npmjs.com/package/iomem
+* [ ] Backends
+	[ ] tilebase https://www.npmjs.com/package/tilebase
+	[ ] Geotiff?
+	[ ] PostGIS database via ST_AsMVT?
+* [ ] Conversions
+	* [ ] pbf → svg
+	* [ ] svg → raster
+	* [ ] geotif → raster
+
+### Probably Never
+
+* [ ] v0 Config Migration?
+* [ ] use mbtiles database as cache?
+* [ ] Standalone Logging?
+* [ ] Config Web Interface
+* [ ] Standalone Daemon with pid files?
+* [ ] Cache: Store in MBTiles or similar?
+* [ ] GDAL?
 * [ ] Footprint
 	* [ ] Replace Phin?
-* [ ] Rassterize vector tiles with maplibre-gl-native?
-* [ ] Cache: Store in MBTiles or similar?
-* [ ] Standalone Daemon with pid files?
-* [ ] Redirects
-* [ ] Convert Geojson ↔ Topojson
-
-## Notes
-
-* [x] treat density as int? → provide int in `params`
-* [ ] differentiate between user errors and backend errors → error wrapper
-* [x] audit plugins an builtins when reading config
-* [x] sort out fix base / root / tiles; default to localhost and / config
-* [ ] cache errors and empty tiles as well
-* [x] pool http requests with agent
-* [ ] figure out nginx hack for empty tiles and errors
-* [ ] memcached nginx sample config
-* [ ] figure out graceful reload / restart, signal handling
-* [-] make logging and output consistant
-* [x] allow bounds to span antimeridian
-* [ ] ensure all tiles in tilestack are unique
-* [ ] hydrate nginx cache directly
+* [ ] ~Nginx Cache Hydration~ (Problem: different file owners)
 
 ## Format Support
 
-* [ ] Vector
-	* [ ] mvt/pbf
+* [x] Vector
+	* [x] mvt/pbf
 	* [ ] svg
-* [ ] Raster
-	* [ ] png
-	* [ ] jpeg
-	* [ ] webp
-	* [ ] avif
+* [x] Raster
+	* [x] png
+	* [x] jpeg
+	* [x] webp
+	* [x] avif
 	* [ ] geotif (readonly)
 * [ ] Data
 	* [ ] GeoJSON
@@ -133,19 +136,3 @@
 // nginx etag — for consistency
 etag = util.format('"%s-%s"', Math.floor(mtimeMs/1000).toString(16), filesize.toString(16));
 ```
-# Drafts
-
-## What you can do with tileblaster
-
-* You need a tileserver, but you don't want to operate a tileserver
-* You use someone elses tileserver, but you don't want to cause traffic
-* Your tileserver is weird and needs something the client can't do
-* Your tileserver is slow and you need to speed things up by caching
-* Your tileserver does not deliver the best formats for your browser
-* Your tileserver delivers huge tiles
-* You need to "fix it in post"
-
-### What you can't do with tileblaster
-
-* Render tiles from scratch
-
