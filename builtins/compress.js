@@ -1,5 +1,5 @@
-const zlib = require("zlib");
-const promisify = require("util").promisify;
+const zlib = require("node:zlib");
+const promisify = require("node:util").promisify;
 
 const brotli = promisify(zlib.brotliCompress);
 const gzip = promisify(zlib.gzip);

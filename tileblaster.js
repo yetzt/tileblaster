@@ -14,7 +14,6 @@ const load = require("./lib/load");
 const mime = require("./lib/mime");
 
 const quu = require("quu");
-
 const sharp = load("sharp"); // optional dep
 
 const tileblaster = module.exports = function tileblaster(config){

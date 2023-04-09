@@ -1,5 +1,5 @@
 const worker = require("node:worker_threads");
-const stream = require("stream");
+const stream = require("node:stream");
 
 if (worker.isMainThread) {
 

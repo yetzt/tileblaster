@@ -1,4 +1,4 @@
-const util = require("util");
+const util = require("node:util");
 
 // a debuging module: dump all the information and end the request
 module.exports = function({ res, data }, next, skip){

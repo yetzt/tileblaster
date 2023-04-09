@@ -1,6 +1,6 @@
-const fs = require("fs");
+const fs = require("node:fs");
 const dur = require("dur");
-const path = require("path");
+const path = require("node:path");
 const xattr = require("fs-xattr");
 
 const cache = {};

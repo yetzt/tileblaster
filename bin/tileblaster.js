@@ -9,8 +9,6 @@ if (require.main === module) {
 
 	if (cluster.isPrimary) { // main
 
-		// fork, watch config, reload, shutdown, etc
-
 		// shutdown state
 		let shuttingdown = false;
 
