@@ -27,13 +27,6 @@ module.exports = function({ req, res, opts, data }, next){
 		return languages.indexOf(lang) === i;
 	});
 
-	// patch in override parse function
-	if (opts.hasOwnProperty("parse") && typeof opts.parse === "function") return opts.parse(req, function(err, params){
-		if (err) return next(err);
-		data.params = { ...data.params, params };
-		next();
-	});
-
 	// get params from steps
 	data.req.params = {
 		m: data.map,
@@ -47,6 +40,13 @@ module.exports = function({ req, res, opts, data }, next){
 	// density options
 	data.req.params.d = data.req.params.r ? parseFloat(data.req.params.r.slice(1,-1)) : 1;
 	data.req.params.w = Math.round(data.req.params.d * 256);
+
+	// patch in override parse function
+	if (opts.hasOwnProperty("parse") && typeof opts.parse === "function") return opts.parse(req, function(err, params){
+		if (err) return next(err);
+		data.req.params = { ...data.req.params, params };
+		next();
+	});
 
 	next();
 };
