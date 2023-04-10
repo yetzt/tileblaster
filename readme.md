@@ -70,8 +70,8 @@ server {
 		proxy_set_header Accept-Encoding $http_accept_encoding;
 		proxy_set_header Accept-Language $http_accept_language;
 		proxy_set_header Accept $http_accept;
-		proxy_set_header If-Modified-Since $http_if_modified_since
-		proxy_set_header If-None-Match $http_if_none_match
+		proxy_set_header If-Modified-Since $http_if_modified_since;
+		proxy_set_header If-None-Match $http_if_none_match;
 		proxy_http_version 1.1;
 		proxy_pass http://tileblaster;
 	}
