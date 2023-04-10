@@ -3,7 +3,7 @@ const config = module.exports = {
 
 	id: "tileblaster", // id of the tileblaster instance, in case you want to run more than one; default: tileblaster
 
-	treads: 1, // number of worker threads in cluster, default: 1
+	threads: 1, // number of worker threads in cluster, default: 1
 	queue: 10, // number of parallel tile processes per worker, default: 12
 
 	server: {
