@@ -177,10 +177,15 @@ tileblaster.prototype.shutdown = function(){
 	let closed = 0;
 	self.servers.forEach(function(server){
 		server.close(function(){
-			if (++closed === self.servers.length) {
-				debug.info("All Servers Closed");
-				process.exit(0);
-			}
+			(function(fn){
+				if (!server.socket) return fn();
+				fs.unlink(server.socket, fn);
+			})(function(){
+				if (++closed === self.servers.length) {
+					debug.info("All Servers Closed");
+					process.exit(0);
+				}
+			});
 		});
 	});
 	// watchdog
@@ -422,19 +427,38 @@ tileblaster.prototype.listen = function(router){
 
 		} else if (listen.socket) {
 
-			fs.unlink(listen.socket, function(err) { // try unlink leftover socket
-				if (err && err.code !== "ENOENT") return debug.error("Deleting socket '%s':", listen.socket, err);
-				server.listen(listen.socket, function(err) {
-					if (err) return debug.error("Binding to socket '%s':", listen.socket, err);
-					debug.info("Listening on socket '%s'", listen.socket);
-					self.servers.push(server);
-					if (listen.mode) fs.chmod(listen.socket, listen.mode, function(err){
-						if (err) return debug.error("Changing permissions of socket '%s' to '%s':", listen.socket, listen.perms.toString(8), err);
-					});
-					if (listen.group) fs.chown(listen.socket, os.userInfo().uid, listen.group, function(err){
-						if (err) return debug.error("Changing gid of socket '%s' to '%s':", listen.socket, listen.gid, err);
+			// create different sockets per instance
+			if (self.config.threads > 1) {
+				let ext = path.extname(listen.socket);
+				listen.socket = path.join(path.dirname(listen.socket), path.basename(listen.socket, ext) + self.config.id + ext);
+			}
+
+			// ensure socket dir exists
+			fs.mkdir(path.dirname(listen.socket), { recursive: true }, function(err){
+				if (err && err.code !== "ENOENT") return debug.error("Creating socket dir '%s':", path.dirname(listen.socket), err);
+
+				// inlink old socket
+				fs.unlink(listen.socket, function(err) { // try unlink leftover socket
+					if (err && err.code !== "ENOENT") return debug.error("Deleting socket '%s':", listen.socket, err);
+
+					server.listen(listen.socket, function(err) {
+						if (err) return debug.error("Binding to socket '%s':", listen.socket, err);
+
+						// store socket path
+						server.socket = listen.socket;
+
+						debug.info("Listening on socket '%s'", listen.socket);
+						self.servers.push(server);
+						if (listen.mode) fs.chmod(listen.socket, listen.mode, function(err){
+							if (err) return debug.error("Changing permissions of socket '%s' to '%s':", listen.socket, listen.perms.toString(8), err);
+						});
+						if (listen.group) fs.chown(listen.socket, os.userInfo().uid, listen.group, function(err){
+							if (err) return debug.error("Changing gid of socket '%s' to '%s':", listen.socket, listen.gid, err);
+						});
+
 					});
 				});
+
 			});
 
 		}
