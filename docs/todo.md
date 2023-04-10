@@ -70,14 +70,16 @@
 * [ ] Map Web Interface, Configurable
 * [ ] Configurable Index Page
 * [ ] Support for Glyphs and Styles, tile.json proxy
-* [ ] Better Error Handline
+* [ ] Better Error Handling
 	* [ ] Error wrapper (to pass along http status etc)?
 	* [ ] 404 for nonexistant tiles
-* [ ] Render Tiles with MapLibreGL-Native
+* [ ] Render Vector Tiles with MapLibreGL-Native
 * [ ] Improve Debug Consistency
+* [ ] Documentation: How to write a plugin
 
 ### Later
 
+* [ ] Screencast
 * [ ] Monitoring / Status / Statistics Interface
 * [ ] Integration with Nginx-Cache
 * [ ] Memcache → https://www.npmjs.com/package/iomem
