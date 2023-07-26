@@ -80,7 +80,7 @@ module.exports = function({ req, res, opts, data }, next){
 	}, [])).then(function(){
 
 		// set tile to best compressed tile client accepts FIXME find by buffer size?
-		const bestCompression = (opts.brotli && data.capabilities.br) ? "br" : (opts.gzip && data.capabilities.gz) ? "gzip" : null;
+		const bestCompression = (opts.brotli && data.req.supports.br) ? "br" : (opts.gzip && data.req.supports.gz) ? "gzip" : null;
 		if (bestCompression) data.tile = data.tiles.find(function(tile){
 			return tile.compression === bestCompression && tile.mimetype === data.tile.mimetype && tile.filetype === data.tile.filetype;
 		}) || data.tile;
