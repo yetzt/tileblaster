@@ -1,4 +1,4 @@
-// check data.params against constraints
+// check data.req.params against constraints
 
 const cache = {};
 
@@ -86,28 +86,28 @@ module.exports = function({ req, res, opts, data }, next){
 	opts = cache[data.map];
 
 	// check for NaNs
-	if (isNaN(data.params.z) || isNaN(data.params.x) || isNaN(data.params.y)) return next(new Error("illegal zxy."));
+	if (isNaN(data.req.params.z) || isNaN(data.req.params.x) || isNaN(data.req.params.y)) return next(new Error("illegal zxy."));
 
 	// check zoom
-	if (data.params.z < opts.minZoom || data.params.z > opts.maxZoom) return next(new Error("illegal zoom."));
+	if (data.req.params.z < opts.minZoom || data.req.params.z > opts.maxZoom) return next(new Error("illegal zoom."));
 
 	// check bounds
 	if (opts.bounds) {
-		if (opts.bounds[data.params.z][0] < opts.bounds[data.params.z][2]) { // check for bounds spanning antimeridian
+		if (opts.bounds[data.req.params.z][0] < opts.bounds[data.req.params.z][2]) { // check for bounds spanning antimeridian
 			// bounds don't span antimeridian
-			if (data.params.x < opts.bounds[data.params.z][0] || data.params.x > opts.bounds[data.params.z][2]) return next(new Error("x is out of bounds."));
+			if (data.req.params.x < opts.bounds[data.req.params.z][0] || data.req.params.x > opts.bounds[data.req.params.z][2]) return next(new Error("x is out of bounds."));
 		} else {
 			// bounds span antimeridian
-			if (data.params.x > opts.bounds[data.params.z][0] && data.params.x < opts.bounds[data.params.z][2]) return next(new Error("x is out of bounds, bounds span antimeridian"));
+			if (data.req.params.x > opts.bounds[data.req.params.z][0] && data.req.params.x < opts.bounds[data.req.params.z][2]) return next(new Error("x is out of bounds, bounds span antimeridian"));
 		}
-		if (data.params.y < opts.bounds[data.params.z][1] || data.params.y > opts.bounds[data.params.z][3]) return next(new Error("y is out of bounds."));
+		if (data.req.params.y < opts.bounds[data.req.params.z][1] || data.req.params.y > opts.bounds[data.req.params.z][3]) return next(new Error("y is out of bounds."));
 	}
 
 	// check extension
-	if (opts.extensions.length > 0 && !opts.extensions.includes(data.params.e) && !opts.extensions.includes(data.params.f)) return next(new Error("illegal extension."));
+	if (opts.extensions.length > 0 && !opts.extensions.includes(data.req.params.e) && !opts.extensions.includes(data.req.params.f)) return next(new Error("illegal extension."));
 
 	// check density
-	if (opts.density && !opts.density.includes(data.params.d) && !opts.density.includes(data.params.f)) return next(new Error("illegal density marker."));
+	if (opts.density && !opts.density.includes(data.req.params.d) && !opts.density.includes(data.req.params.f)) return next(new Error("illegal density marker."));
 
 	// all passed
 	next();
