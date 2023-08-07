@@ -44,6 +44,7 @@ module.exports = function({ req, res, opts, data }, next){
 				};
 				data.tiles.push({
 					...tile,
+					path: tile.path+".br",
 					buffer: compressed,
 					compression: "br",
 					headers: { ...(tile.headers||{}), "content-encoding": "br" },
@@ -64,6 +65,7 @@ module.exports = function({ req, res, opts, data }, next){
 				}
 				data.tiles.push({
 					...tile,
+					path: tile.path+".gz",
 					buffer: compressed,
 					compression: "gzip",
 					headers: { ...(tile.headers||{}), "content-encoding": "gzip" },
