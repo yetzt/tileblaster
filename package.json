@@ -1,6 +1,6 @@
 {
   "name": "tileblaster",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "a quick and versatile map tile caching proxy",
   "main": "tileblaster.js",
   "bin": {
@@ -25,7 +25,7 @@
     "fs-xattr": "^0.3.1",
     "klaw": "^4.1.0",
     "minimist": "^1.2.8",
-    "node-watch": "^0.7.3",
+    "node-watch": "^0.7.4",
     "phin": "^3.7.0",
     "quu": "^0.4.3"
   },
@@ -35,7 +35,7 @@
     "mbg": "^0.0.2",
     "node-liblzma": "^1.1.9",
     "optipng-js": "^0.1.2",
-    "pmtiles": "^2.9.0",
+    "pmtiles": "^2.10.0",
     "sharp": "^0.32.4",
     "versatiles": "^0.3.1",
     "vtt": "^0.0.3"
@@ -48,6 +48,20 @@
     "linux"
   ],
   "keywords": [
-    "tileblaster", "tileserver", "map", "tiles", "tile", "mbtiles", "versatiles", "pmtiles", "server", "proxy", "cache", "vectortiles", "rastertiles", "mvt", "pbf"
+    "tileblaster",
+    "tileserver",
+    "map",
+    "tiles",
+    "tile",
+    "mbtiles",
+    "versatiles",
+    "pmtiles",
+    "server",
+    "proxy",
+    "cache",
+    "vectortiles",
+    "rastertiles",
+    "mvt",
+    "pbf"
   ]
 }
