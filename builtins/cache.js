@@ -14,7 +14,7 @@ module.exports = function({ opts, data, res }, next, skip){
 	if (!cache.hasOwnProperty(data.map)) {
 
 		// store instance
-		cache.store = this.lib.store({ root: config.paths.data, ext: config.id+".tmp" });
+		cache.store = this.lib.store({ root: config.paths.data, ext: "."+config.id+".tmp" });
 
 		// merge opts of all uses of the cache builtin in a map config
 		opts = config.maps[data.map].filter(function(use){
