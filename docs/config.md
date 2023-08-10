@@ -151,7 +151,9 @@ within a bounding box, to specific extensions and densities, or use your own che
 	density: [ "", "@2x", "@3x" ], // allowed density markeers
 	check: function(params, fn) { // override check function, params from parse
 		fn(new Error("Check failed")); // deliver error if check failed
-	}
+	},
+	status: 204, // http status code delivered on fail; default: 204
+	hints: false, // send `x-tileblaster-hint` header with error message
 }
 ```
 

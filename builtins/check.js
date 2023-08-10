@@ -2,12 +2,25 @@
 
 const cache = {};
 
-module.exports = function({ req, res, opts, data }, next){
+module.exports = function({ req, res, opts, data }, next, skip){
 
 	// fill cache for map
 	if (!cache.hasOwnProperty(data.map)) {
 
 		cache[data.map] = {};
+
+		// skip function
+		cache[data.map].abort = function(err){
+			res.statusCode = cache[data.map].status;
+			if (cache[data.map].hints && err) res.setHeader("x-tileblaster-hint", err.message || err.toString());
+			res.end();
+			res.used = true; // mark connection as used
+			return skip(); // skip rest of jobs
+		};
+
+		cache[data.map].status = (opts.status && Number.isInteger(opts.status)) ? opts.status : 204;
+
+		cache[data.map].hints = !!opts.hints;
 
 		// assume reasonable default if no zoom level was specified
 		cache[data.map].zoom = (!opts.zoom || opts.zoom.length === 0) ? [ 0, 24 ] : opts.zoom;
@@ -86,28 +99,28 @@ module.exports = function({ req, res, opts, data }, next){
 	opts = cache[data.map];
 
 	// check for NaNs
-	if (isNaN(data.req.params.z) || isNaN(data.req.params.x) || isNaN(data.req.params.y)) return next(new Error("illegal zxy."));
+	if (isNaN(data.req.params.z) || isNaN(data.req.params.x) || isNaN(data.req.params.y)) return cache[data.map].abort(new Error("illegal zxy."));
 
 	// check zoom
-	if (data.req.params.z < opts.minZoom || data.req.params.z > opts.maxZoom) return next(new Error("illegal zoom."));
+	if (data.req.params.z < opts.minZoom || data.req.params.z > opts.maxZoom) return cache[data.map].abort(new Error("illegal zoom."));
 
 	// check bounds
 	if (opts.bounds) {
 		if (opts.bounds[data.req.params.z][0] < opts.bounds[data.req.params.z][2]) { // check for bounds spanning antimeridian
 			// bounds don't span antimeridian
-			if (data.req.params.x < opts.bounds[data.req.params.z][0] || data.req.params.x > opts.bounds[data.req.params.z][2]) return next(new Error("x is out of bounds."));
+			if (data.req.params.x < opts.bounds[data.req.params.z][0] || data.req.params.x > opts.bounds[data.req.params.z][2]) return cache[data.map].abort(new Error("x is out of bounds."));
 		} else {
 			// bounds span antimeridian
-			if (data.req.params.x > opts.bounds[data.req.params.z][0] && data.req.params.x < opts.bounds[data.req.params.z][2]) return next(new Error("x is out of bounds, bounds span antimeridian"));
+			if (data.req.params.x > opts.bounds[data.req.params.z][0] && data.req.params.x < opts.bounds[data.req.params.z][2]) return cache[data.map].abort(new Error("x is out of bounds, bounds span antimeridian"));
 		}
-		if (data.req.params.y < opts.bounds[data.req.params.z][1] || data.req.params.y > opts.bounds[data.req.params.z][3]) return next(new Error("y is out of bounds."));
+		if (data.req.params.y < opts.bounds[data.req.params.z][1] || data.req.params.y > opts.bounds[data.req.params.z][3]) return cache[data.map].abort(new Error("y is out of bounds."));
 	}
 
 	// check extension
-	if (opts.extensions.length > 0 && !opts.extensions.includes(data.req.params.e) && !opts.extensions.includes(data.req.params.f)) return next(new Error("illegal extension."));
+	if (opts.extensions.length > 0 && !opts.extensions.includes(data.req.params.e) && !opts.extensions.includes(data.req.params.f)) return cache[data.map].abort(new Error("illegal extension."));
 
 	// check density
-	if (opts.density && !opts.density.includes(data.req.params.d) && !opts.density.includes(data.req.params.f)) return next(new Error("illegal density marker."));
+	if (opts.density && !opts.density.includes(data.req.params.d) && !opts.density.includes(data.req.params.f)) return cache[data.map].abort(new Error("illegal density marker."));
 
 	// all passed
 	next();

@@ -70,9 +70,9 @@
 * [ ] Map Web Interface, Configurable
 * [ ] Configurable Index Page
 * [ ] Support for Glyphs and Styles, tile.json proxy
-* [ ] Better Error Handling
-	* [ ] Error wrapper (to pass along http status etc)?
-	* [ ] 404 for nonexistant tiles
+* [x] Better Error Handling
+	* [x] Error wrapper (to pass along http status etc)?
+	* [x] Skip for nonexistant tiles
 * [ ] Render Vector Tiles with MapLibreGL-Native
 * [ ] Improve Debug Consistency
 * [ ] Documentation: How to write a plugin
