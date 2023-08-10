@@ -68,7 +68,9 @@ const config = module.exports = {
 			density: [ "", "@2x", "@3x" ], // allowed density markeers
 			check: function(params, fn) { // override check function, params from parse
 				fn(new Error("Check failed")); // deliver error if check failed
-			}
+			},
+			status: 204,
+			hints: true,
 		},{ // get from cache, skip to `skipto` if successful
 			builtin: "cache",
 			skipto: "deliver",
