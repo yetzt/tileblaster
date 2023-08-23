@@ -15,6 +15,7 @@ module.exports = function({ req, res, opts, data }, next){
 	if (!opts.origins.includes("*") && opts.origins.includes(req.headers.origin)) return next();
 
 	// send common headers
+	res.setHeader("Vary", "Origin"); // important for caching
 	res.setHeader("Access-Control-Allow-Origin", req.headers.origin||"*");
 	res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
 	res.setHeader("Access-Control-Allow-Headers", "DNT,If-None-Match,If-Modified-Since,Cache-Control,Content-Type,Range,Accept-Encoding");
