@@ -39,7 +39,7 @@ module.exports = function({ req, res, opts, data }, next){
 		if (opts.brotli) promises.push(new Promise(function(resolve, reject) {
 			brotli(tile.buffer, opts.brotli).then(function(compressed){
 				if (compressed.length > tile.buffer.length) {
-					debug.warn("Discarding useless Brotli compression for %s: +%db", data.path.magenta, compressed.length-tile.buffer.length);
+					debug.warn("Discarding useless Brotli compression for %s: +%db", tile.path.magenta, compressed.length-tile.buffer.length);
 					return resolve();
 				};
 				data.tiles.push({
@@ -52,7 +52,7 @@ module.exports = function({ req, res, opts, data }, next){
 				});
 				resolve();
 			}).catch(function(err){
-				debug.error("Brotli failed for %s: %s", data.path.magenta, err);
+				debug.error("Brotli failed for %s: %s", tile.path.magenta, err);
 				reject(err);
 			});
 		}));
@@ -60,7 +60,7 @@ module.exports = function({ req, res, opts, data }, next){
 		if (opts.gzip) promises.push(new Promise(function(resolve, reject) {
 			gzip(tile.buffer, opts.gzip).then(function(compressed){
 				if (compressed.length > tile.buffer.length) {
-					debug.warn("Discarding useless Gzip compression for %s: +%db", data.path.magenta, compressed.length-tile.buffer.length);
+					debug.warn("Discarding useless Gzip compression for %s: +%db", tile.path.magenta, compressed.length-tile.buffer.length);
 					return resolve();
 				}
 				data.tiles.push({
@@ -73,7 +73,7 @@ module.exports = function({ req, res, opts, data }, next){
 				});
 				resolve();
 			}).catch(function(err){
-				debug.error("Gzip failed for %s: %s", data.path.magenta, err);
+				debug.error("Gzip failed for %s: %s", tile.path.magenta, err);
 				reject(err);
 			});
 		}));
