@@ -19,7 +19,7 @@ module.exports = function({ req, res, opts, data }, next){
 		return tile.type === "pbf";
 	}).forEach(function(tile){
 		try {
-			tile.buffer = vtt.pack(opts.edit(vtt.unpack(tile.buffer)));
+			tile.buffer = Buffer.from(vtt.pack(opts.edit(vtt.unpack(tile.buffer))));
 		} catch (err) {
 			debug.error("Editing vector tile failed:", err);
 		}
