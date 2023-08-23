@@ -1,6 +1,6 @@
 // send cors headers.
 
-module.exports = function({ req, res, opts, data }, next){
+module.exports = function({ req, res, opts, data }, next, skip){
 
 	// only if origin header is set
 	if (!req.headers.hasOwnProperty("origin") || !req.headers.origin) return next();
@@ -28,6 +28,8 @@ module.exports = function({ req, res, opts, data }, next){
 		res.setHeader("Content-Length", 0);
 		res.statusCode = 204;
 		res.end();
+		res.used = true;
+		return skip();
 	};
 
 	next();
