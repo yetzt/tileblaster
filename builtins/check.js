@@ -11,6 +11,7 @@ module.exports = function({ req, res, opts, data }, next, skip){
 
 		// skip function
 		cache[data.map].abort = function(err){
+			if (res.used) return;
 			res.statusCode = cache[data.map].status;
 			if (cache[data.map].hints && err) res.setHeader("x-tileblaster-hint", err.message || err.toString());
 			res.end();

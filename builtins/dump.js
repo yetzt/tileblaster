@@ -12,7 +12,6 @@ module.exports = function({ res, data }, next, skip){
 	res.statusCode = 200;
 	res.setHeader("content-type", "text/plain");
 	res.end(dump);
-
 	res.used = true;
 	skip();
 

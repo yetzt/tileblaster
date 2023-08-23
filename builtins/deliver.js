@@ -10,6 +10,7 @@ module.exports = function({ res, opts, data }, next){
 	if (data.tile.buffer.length === 0) {
 		res.statusCode = 204;
 		res.end();
+		res.used = true;
 		return next();
 	}
 
