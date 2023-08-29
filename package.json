@@ -1,6 +1,6 @@
 {
   "name": "tileblaster",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "a quick and versatile map tile caching proxy",
   "main": "tileblaster.js",
   "bin": {
