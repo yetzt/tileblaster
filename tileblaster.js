@@ -116,6 +116,7 @@ const tileblaster = module.exports = function tileblaster(config){
 			args.start = Date.now();
 			args.timeout = setTimeout(function(){
 				debug.warn("Task timed out: %s (%d total, %d running)", req.path, self.queue.stack.length, self.queue.running);
+				if (res.used) return debug.warn("Connection already used.", req.path);
 				res.used = true;
 				args.timeout = null;
 				res.statusCode = 500;
