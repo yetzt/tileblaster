@@ -33,6 +33,7 @@ module.exports = function({ req, res, opts, data }, next, skip){
 	debug.info("Versatiles: Fetching %s/%s/%s/%s", data.map, data.req.params.z, data.req.params.x, data.req.params.y);
 	vt.getTile(data.req.params.z, data.req.params.x, data.req.params.y, function(err, buf){
 		if (err) return abort(err); // fail gracefully
+		if (buf.length === 0) return abort(new Error("Tile does not exist")); // fail gracefully
 
 		// if precompressed, keep in tile stack
 		/* TODO evaluate side effects
