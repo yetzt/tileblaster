@@ -113,8 +113,21 @@ const tileblaster = module.exports = function tileblaster(config){
 
 		self.queue.push(function(next){ // queue tasks
 
+			args.start = Date.now();
+			args.timeout = setTimeout(function(){
+				debug.warn("Task timed out: %s (%d total, %d running)", req.path, self.queue.stack.length, self.queue.running);
+				res.used = true;
+				args.timeout = null;
+				next();
+			},30000);
+
 			// create tasks from map
 			tasks(self.maps[req.map]).run(args, function(err, { res }){
+
+				// check if timed out
+				if (args.timeout === null) return;
+				clearTimeout(args.timeout);
+				debug.info("Task complete: %s (%ds)", req.path, ((Date.now()-args.start)/1000));
 
 				next(); // free queue
 
