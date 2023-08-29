@@ -17,23 +17,23 @@ module.exports = function({ req, res, opts, data }, next, skip){
 			headers: ((opts.hasOwnProperty("headers")) ? opts.headers : {}),
 		});
 
-		// skip function
-		cache[data.map].abort = function(err, r, p){
-			debug.info("Versatiles: Abort %s/%s/%s/%s: %s", ...p, err.message || err.toString());
-			if (r.used) return;
-			res.statusCode = 204; // no content
-			r.setHeader("x-tileblaster-hint", err.message || err.toString());
-			r.end();
-			r.used = true; // mark connection as used
-			return skip(); // skip rest of jobs
-		};
-
 	};
 	const vt = cache[data.map];
 
+	// abort function
+	const abort = function abort(err){
+		debug.info("Versatiles: Abort %s/%s/%s/%s: %s", data.map, data.req.params.z, data.req.params.x, data.req.params.y, err.message || err.toString());
+		if (res.used) return;
+		res.statusCode = 204; // no content
+		res.end();
+		res.used = true; // mark connection as used
+		return skip(); // skip rest of jobs
+	};
+
 	debug.info("Versatiles: Fetching %s/%s/%s/%s", data.map, data.req.params.z, data.req.params.x, data.req.params.y);
 	vt.getTile(data.req.params.z, data.req.params.x, data.req.params.y, function(err, buf){
-		if (err) return cache[data.map].abort(err, res, [ data.map, data.req.params.z, data.req.params.x, data.req.params.y ]); // fail gracefully
+		if (err) return abort(err); // fail gracefully
+		if (buf.length === 0) return abort(new Error("Tile does not exist")); // fail gracefully
 
 		// if precompressed, keep in tile stack
 		/* TODO evaluate side effects
@@ -52,7 +52,7 @@ module.exports = function({ req, res, opts, data }, next, skip){
 
 		// decompress tile
 		vt.decompress(vt.header.tile_precompression, buf, function(err, buf){
-			if (err) return cache[data.map].abort(err, res, [ data.map, data.req.params.z, data.req.params.x, data.req.params.y ]); // fail gracefully
+			if (err) return abort(err); // fail gracefully
 
 			const tile = {
 				buffer: buf,
