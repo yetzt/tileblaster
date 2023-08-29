@@ -118,6 +118,9 @@ const tileblaster = module.exports = function tileblaster(config){
 				debug.warn("Task timed out: %s (%d total, %d running)", req.path, self.queue.stack.length, self.queue.running);
 				res.used = true;
 				args.timeout = null;
+				res.statusCode = 500;
+				res.setHeader("content-type", "text/plain");
+				res.end("Error.");
 				next();
 			},30000);
 
