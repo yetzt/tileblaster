@@ -3,6 +3,7 @@
 const cache = {};
 
 module.exports = function({ req, res, opts, data }, next, skip){
+	const debug = this.lib.debug;
 
 	// fill cache for map
 	if (!cache.hasOwnProperty(data.map)) {
