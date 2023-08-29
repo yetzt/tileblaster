@@ -18,7 +18,8 @@ module.exports = function({ req, res, opts, data }, next, skip){
 		});
 
 		// skip function
-		cache[data.map].abort = function(err){
+		cache[data.map].abort = function(err, p){
+			debug.info("Versatiles: Abort %s/%s/%s/%s: %s", ...p, err.message || err.toString());
 			if (res.used) return;
 			res.statusCode = 204; // no content
 			res.setHeader("x-tileblaster-hint", err.message || err.toString());
@@ -30,9 +31,9 @@ module.exports = function({ req, res, opts, data }, next, skip){
 	};
 	const vt = cache[data.map];
 
-	debug.info("Fetching %s/%s/%s", data.req.params.z, data.req.params.x, data.req.params.y);
+	debug.info("Versatiles: Fetching %s/%s/%s/%s", data.map, data.req.params.z, data.req.params.x, data.req.params.y);
 	vt.getTile(data.req.params.z, data.req.params.x, data.req.params.y, function(err, buf){
-		if (err) return cache[data.map].abort(err); // fail gracefully
+		if (err) return cache[data.map].abort(err, [ data.map, data.req.params.z, data.req.params.x, data.req.params.y ]); // fail gracefully
 
 		// if precompressed, keep in tile stack
 		/* TODO evaluate side effects
@@ -51,7 +52,7 @@ module.exports = function({ req, res, opts, data }, next, skip){
 
 		// decompress tile
 		vt.decompress(vt.header.tile_precompression, buf, function(err, buf){
-			if (err) return cache[data.map].abort(err); // fail gracefully
+			if (err) return cache[data.map].abort(err, [ data.map, data.req.params.z, data.req.params.x, data.req.params.y ]); // fail gracefully
 
 			const tile = {
 				buffer: buf,
