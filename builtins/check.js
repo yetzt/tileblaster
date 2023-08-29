@@ -94,10 +94,10 @@ module.exports = function({ req, res, opts, data }, next, skip){
 	const abort = function abort (err){
 		debug.info("Check: Abort %s/%s/%s/%s: %s", data.map, data.req.params.z, data.req.params.x, data.req.params.y, err.message || err.toString());
 		if (res.used) return;
-		r.statusCode = cache[data.map].status;
-		if (cache[data.map].hints && err) r.setHeader("x-tileblaster-hint", err.message || err.toString());
-		r.end();
-		r.used = true; // mark connection as used
+		res.statusCode = cache[data.map].status;
+		if (cache[data.map].hints && err) res.setHeader("x-tileblaster-hint", err.message || err.toString());
+		res.end();
+		res.used = true; // mark connection as used
 		return skip(); // skip rest of jobs
 	};
 
