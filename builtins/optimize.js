@@ -84,7 +84,7 @@ if (worker.isMainThread) {
 		});
 
 		// check if there are jobs
-		if (jobs.length === 0) return debug.warn("Nothing to optimize for '%s': -%db", data.tile.path.magenta), next();
+		if (jobs.length === 0) return debug.warn("Nothing to optimize for '%s': -%db", (data.tile.path||"").magenta), next();
 
 		// execute
 		Promise.allSettled(jobs).then(function(){
