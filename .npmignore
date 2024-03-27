@@ -2,3 +2,7 @@ node_modules
 docs
 .gitignore
 .npmignore
+/config.js
+*.socket
+attic
+.nova
