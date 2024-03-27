@@ -277,8 +277,7 @@ Edit vectortiles
 
 #### `convert`
 
-Convert raster tiles to differen Formats.
-The resulting tile with the smallest size becomes the main tile.
+Convert raster tiles to `png` or `jpeg` while keeping the tile path.
 
 ``` js
 {

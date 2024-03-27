@@ -9,8 +9,8 @@ module.exports = function convert({ opts, data }, next){
 		return next();
 	};
 
-	// check if tile should be optimized
-	if (!["png","jpeg","jpg","gif"].includes(data.tile.type)) {
+	// check if the tile should be converted
+	if (!["png","jpeg","jpg","gif","webp","avif","heif"].includes(data.tile.type)) {
 		debug.warn("Convert: Unsupported file type: %s", data.tile.type);
 		return next();
 	};
@@ -31,19 +31,20 @@ module.exports = function convert({ opts, data }, next){
 
 				// fix tile
 				tile.buffer = buffer;
-				tile.path = tile.path+"."+method;
 				tile.type = method;
 				tile.mimetype = "image/"+method;
 				tile.headers = { ...tile.headers };
 
+				// remove main tile from stack
+				data.tiles = data.tiles.filter(t=>(t.path!==tile.path));
+
 				// add to tile stack
 				data.tiles.unshift(tile);
 
-				// set primary if smaller
-				if (buffer.length < data.tile.buffer.length) {
-					debug.info("Converted '%s': -%db", tile.path.magenta, data.tile.buffer.length-buffer.length);
-					data.tile = tile;
-				};
+				// add as main tile
+				data.tile = tile;
+
+				debug.info("Converted '%s'", tile.path.magenta);
 
 				resolve();
 
