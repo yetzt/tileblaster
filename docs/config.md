@@ -275,6 +275,21 @@ Edit vectortiles
 
 **Not yet implemented** FIXME
 
+#### `convert`
+
+Convert raster tiles to differen Formats.
+The resulting tile with the smallest size becomes the main tile.
+
+``` js
+{
+	builtin: "convert",
+	jpeg: {
+		quality: 90,
+		mozjpeg: true,
+	},
+}
+```
+
 #### `modernize`
 
 Convert JPEG or PNG raster tiles to WebP or AVIF.
