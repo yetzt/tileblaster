@@ -436,7 +436,7 @@ tileblaster.prototype.listen = function(router){
 
 		if (listen.port) {
 
-			server.listen(listen.port, listen.port, function(err){
+			server.listen(listen.port, listen.host, function(err){
 				if (err) return debug.error("listen: ERROR binding port '%s:%d':", listen.host, listen.port, err);
 				debug.info("Listening on '%s:%d'", listen.host, listen.port);
 				self.servers.push(server);
