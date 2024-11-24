@@ -1,6 +1,6 @@
 {
   "name": "tileblaster",
-  "version": "1.0.14",
+  "version": "1.1.0",
   "description": "a quick and versatile map tile caching proxy",
   "main": "tileblaster.js",
   "bin": {
@@ -26,8 +26,8 @@
     "klaw": "^4.1.0",
     "minimist": "^1.2.8",
     "node-watch": "^0.7.4",
-    "phn": "^0.0.3",
-    "quu": "^0.4.3"
+    "phn": "^0.1.1",
+    "quu": "^0.5.0"
   },
   "optionalDependencies": {
     "fzstd": "^0.1.1",
@@ -36,7 +36,7 @@
     "node-liblzma": "^1.1.9",
     "optipng-js": "^0.1.2",
     "pmtiles": "^2.11.0",
-    "sharp": "^0.33.4",
+    "sharp": "^0.33.5",
     "versatiles": "^0.3.1",
     "vtt": "^0.0.3"
   },
