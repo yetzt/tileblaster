@@ -209,6 +209,29 @@ Fetch a tile from a tileserver via http(s).
 }
 ```
 
+the `url` parameter can be a function that returns the url:
+
+``` js
+{
+	builtin: "tileserver",
+	url: function(params){
+
+		// derive image size from density marker
+		const size = 256*params.d;
+
+		// calculate tile bbox for EPSG:3857
+		const r = 40075016.68 / Math.pow(2, p.z);
+		const x0 = p.x * r - 20037508.34; // xmin
+		const y1 = 20037508.34 - p.y * r; // ymax
+
+		return `https://example.gov/wms?service=WMS&version=1.3.0&request=GetMap&LAYERS=somelayer&CRS=EPSG:3857&FORMAT=image/jpeg&WIDTH=${size}&HEIGHT=${size}&BBOX=${x0},${y1-r},${x0+r},${y1}`;
+	},
+	status: [ 200 ], // expected status code(s)
+	mimetypes: [ "image/jpeg" ], // expected mime types
+}
+```
+
+
 #### `versatiles`
 
 Fetch a tile from a local or remote [versatiles](https://versatiles.org) container.

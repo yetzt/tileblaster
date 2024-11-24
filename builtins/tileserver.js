@@ -45,7 +45,7 @@ module.exports = function({ req, res, opts, data }, next){
 	// set subdomain if configured
 	if (opts.subdomains) params.s = opts.subdomains[ Date.now() % opts.subdomains.length ];
 
-	const tileurl = strtpl(opts.url, params);
+	const tileurl = (typeof opts.url === "function") ? opts.url(params) : strtpl(opts.url, params);
 
 	// FIXME check fails cache
 
