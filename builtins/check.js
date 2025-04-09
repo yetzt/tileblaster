@@ -123,7 +123,7 @@ module.exports = function({ req, res, opts, data }, next, skip){
 	if (opts.extensions.length > 0 && !opts.extensions.includes(data.req.params.e) && !opts.extensions.includes(data.req.params.f)) return abort(new Error("illegal extension."));
 
 	// check density
-	if (opts.density && !opts.density.includes(data.req.params.d) && !opts.density.includes(data.req.params.r)) return abort(new Error("illegal density marker."));
+	if (opts.density && !opts.density.includes(data.req.params.d) && !opts.density.includes(data.req.params.r||null)) return abort(new Error("illegal density marker."));
 
 	// all passed
 	next();
