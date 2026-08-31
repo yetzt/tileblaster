@@ -40,6 +40,10 @@ if you're allowed to do so.
 * `-v` `--verbose` - enable debug output
 * `-q` `--quiet` - disable debug output
 
+## Docker usage
+`docker build . -t tileblaster`
+`docker run -v <config-path>:/usr/src/app/config.js tileblaster -c ./config.js -v`
+ 
 ## Configuration
 
 See [Configuration](docs/config.md) and [Examples](docs/examples.md)
