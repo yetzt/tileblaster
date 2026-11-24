@@ -19,6 +19,19 @@ if (require.main === module) {
 		function fork(n){
 			worker = cluster.fork({ ...process.env, workerid: n });
 			debug.info("Started Worker #%d".bold.white, n);
+			
+			// Handle messages from workers
+			worker.on('message', function(message) {
+				if (typeof message === 'object' && message.type === 'fatal-error') {
+					debug.error("Worker #%d reported fatal error: %s".bold.red, n, message.message);
+					if (message.error === 'EADDRINUSE') {
+						debug.error("Address already in use - initiating complete shutdown".bold.red);
+						shutdown();
+						return;
+					}
+				}
+			});
+			
 			worker.on('disconnect', function(){
 				debug.warn("Disconnect from Worker #%d".bold.white, n);
 				if (shuttingdown) { // remove worker from pool

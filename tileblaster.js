@@ -434,10 +434,30 @@ tileblaster.prototype.listen = function(router){
 			router.call(self.router, ...arguments);
 		});
 
+		// Handle server errors (like EADDRINUSE) before they become unhandled
+		server.on('error', function(err) {
+			debug.error("Server error:", err);
+			if (err.code === 'EADDRINUSE') {
+				debug.error("Address already in use, starting shutdown process");
+				// Notify main process about fatal error before shutting down
+				if (process.send) {
+					process.send({ type: 'fatal-error', error: 'EADDRINUSE', message: 'Address already in use' });
+				}
+				self.shutdown();
+			}
+		});
+
 		if (listen.port) {
 
 			server.listen(listen.port, listen.host, function(err){
-				if (err) return debug.error("listen: ERROR binding port '%s:%d':", listen.host, listen.port, err);
+				if (err) {
+					debug.error("listen: ERROR binding port '%s:%d':", listen.host, listen.port, err);
+					if (err.code === 'EADDRINUSE') {
+						debug.error("Port %d is already in use, starting shutdown process", listen.port);
+						self.shutdown();
+					}
+					return;
+				}
 				debug.info("Listening on '%s:%d'", listen.host, listen.port);
 				self.servers.push(server);
 			});
@@ -459,7 +479,14 @@ tileblaster.prototype.listen = function(router){
 					if (err && err.code !== "ENOENT") return debug.error("Deleting socket '%s':", listen.socket, err);
 
 					server.listen(listen.socket, function(err) {
-						if (err) return debug.error("Binding to socket '%s':", listen.socket, err);
+						if (err) {
+							debug.error("Binding to socket '%s':", listen.socket, err);
+							if (err.code === 'EADDRINUSE') {
+								debug.error("Socket %s is already in use, starting shutdown process", listen.socket);
+								self.shutdown();
+							}
+							return;
+						}
 
 						// store socket path
 						server.socket = listen.socket;
